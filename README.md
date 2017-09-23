@@ -1,4 +1,4 @@
-## net.cactusthorn.initializer
+# net.cactusthorn.initializer
 
 Initializer is Java library that can be used to dynamically initialize class attributes.
 
@@ -8,8 +8,8 @@ Idea is, that configuration properties present in short and human readable way,
 when even multi-value properties are stored in one line. 
 And then data is using to intitialize classes with complex types without any effort from the developer.
 
-# Very simple example
-Let say we have the class, which whant to be able to initilize :
+## Very simple example
+Let say we have the class:
 ```java
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -64,7 +64,7 @@ public class MyInit {
 	}
 }
 ```
-# What it can initialize for the moment?
+## What it can initialize for the moment?
 1. all primitive and simple object types, StringBuffer, StringBuilder, BigDecimal, BigInteger, java.util.Date, java.sql.Date, java.util.Calendar  
 2. one-dimensional arrays of any type which described above
 3. basic Lists & Sets with generic of any types which described above
@@ -76,7 +76,7 @@ public class MyInit {
 9. Easy extendable for new types
 10. Check unit tests - a lot of examples there.
 
-# License
+## License
 Initializer is released under the BSD 2-Clause License
 ```
 Copyright (C) 2017, Alexei Khatskevich
