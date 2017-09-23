@@ -23,7 +23,8 @@ public class ListSetTypes extends MultiValueTypes {
 		return (ListSetTypes)super.clone();
 	}
 	
-	private Constructor<?> getConstructor(Class<?> fieldType ) {
+	@SuppressWarnings({ "unchecked"})
+	protected Constructor<? extends Collection<Object>> getConstructor(Class<?> fieldType ) {
 		
 		Class<?> clazz = null;
 		if (fieldType.isInterface() ) {
@@ -61,13 +62,12 @@ public class ListSetTypes extends MultiValueTypes {
 		}
 	
 		try {
-			return clazz.getConstructor();
+			return (Constructor<? extends Collection<Object>>)clazz.getConstructor();
 		} catch (NoSuchMethodException|SecurityException e) {
 			return null;
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Override
 	public Value<?> createObject(Class<?> fieldType, Type fieldGenericType, Info info, String propertyValue, List<ITypes> availableTypes) throws InitializerException {
 		
@@ -87,7 +87,7 @@ public class ListSetTypes extends MultiValueTypes {
 			Value.empty();
 		}
 		
-		Constructor<?> constructor = getConstructor(fieldType);
+		Constructor<? extends Collection<Object>> constructor = getConstructor(fieldType);
 		if (constructor == null) {
 			return Value.empty();
 		}
@@ -101,7 +101,7 @@ public class ListSetTypes extends MultiValueTypes {
 		
 		Collection<Object> newCollection = null;
 		try {
-			newCollection = (Collection<Object>)constructor.newInstance();
+			newCollection = constructor.newInstance();
 		} catch ( InvocationTargetException|IllegalAccessException|InstantiationException e ) {
 			throw new InitializerException(info, e);
 		}

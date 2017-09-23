@@ -26,7 +26,8 @@ public class MapTypes extends MultiValueTypes {
 		return (MapTypes)super.clone();
 	}
 	
-	private Constructor<?> getConstructor(Class<?> fieldType) {
+	@SuppressWarnings("unchecked")
+	protected Constructor<? extends Map<Object,Object>> getConstructor(Class<?> fieldType) {
 		Class<?> clazz = null;
 		if (fieldType.isInterface() ) {
 			if (Map.class.isAssignableFrom(fieldType) ) {
@@ -57,13 +58,12 @@ public class MapTypes extends MultiValueTypes {
 		}
 		
 		try {
-			return clazz.getConstructor();
+			return (Constructor<? extends Map<Object,Object>>)clazz.getConstructor();
 		} catch (NoSuchMethodException|SecurityException e) {
 			return null;
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Override
 	public Value<?> createObject(Class<?> fieldType, Type fieldGenericType, Info info, String propertyValue, List<ITypes> availableTypes) throws InitializerException {
 		
@@ -83,7 +83,7 @@ public class MapTypes extends MultiValueTypes {
 			return Value.empty();
 		}
 		
-		Constructor<?> constructor = getConstructor(fieldType);
+		Constructor<? extends Map<Object,Object>> constructor = getConstructor(fieldType);
 		if (constructor == null) {
 			return Value.empty();
 		}
@@ -102,7 +102,7 @@ public class MapTypes extends MultiValueTypes {
 		
 		Map<Object,Object> newMap = null;
 		try {
-			newMap = (Map<Object,Object>)constructor.newInstance();
+			newMap = constructor.newInstance();
 		} catch ( InvocationTargetException|IllegalAccessException|InstantiationException e ) {
 			throw new InitializerException(info, e);
 		}
