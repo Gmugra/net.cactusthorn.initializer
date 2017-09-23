@@ -48,6 +48,24 @@ public final class Initializer {
 		additionalDateTimeFormatPatterns.add(formatPattern);
 		return this;
 	}
+	
+	public void initialize(Map<String,String> configMap, Collection<?> collection) throws InitializerException {
+		
+		ConfigPropertiesBundle configBundle = new ConfigPropertiesBundle("default");
+		if (configMap != null) {
+			configBundle.putAll(configMap);
+		}
+		initialize(configBundle, collection);
+	}
+	
+	public void initialize(Map<String,String> configMap, Object... objects) throws InitializerException {
+		
+		ConfigPropertiesBundle configBundle = new ConfigPropertiesBundle("default");
+		if (configMap != null) {
+			configBundle.putAll(configMap);
+		}
+		initialize(configBundle, objects);
+	}
 
 	public void initialize(ConfigPropertiesBundle configBundle, Collection<?> collection) throws InitializerException {
 		

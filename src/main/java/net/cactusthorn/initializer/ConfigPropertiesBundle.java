@@ -39,7 +39,7 @@ public class ConfigPropertiesBundle {
 		return this;
 	}
 	
-	public ConfigPropertiesBundle putAll(Map<String,String> propertie) {
+	public ConfigPropertiesBundle putAll(Map<String,String> properties) {
 		this.properties.putAll(properties);
 		return this;
 	}
