@@ -10,10 +10,15 @@
  ******************************************************************************/
 package net.cactusthorn.initializer.types;
 
-import java.lang.reflect.ParameterizedType;
+import static net.cactusthorn.initializer.InitializerException.StandardError.WRONG_VALUE;
+import static net.cactusthorn.initializer.InitializerException.StandardError.WRONG_VALUE_AT_POSITION;
+
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+
+import net.cactusthorn.initializer.InitializerException;
+import net.cactusthorn.initializer.annotations.Info;
 
 public abstract class MultiValueTypes implements ITypes {
 
@@ -25,6 +30,7 @@ public abstract class MultiValueTypes implements ITypes {
 	/*
 	 *  Drop Escaping only for \\ \, and \=
 	 */
+	//TODO need something more clever: too many replaces
 	private String deleteEscapingComma(String str ) {
 		return str.replace("\\\\","\\").replace("\\,",",");
 	}
@@ -101,28 +107,56 @@ public abstract class MultiValueTypes implements ITypes {
 	    return arr;
 	}
 	
-	protected Class<?> getCollectionType(Type fieldGenericType ) {
+	protected Class<?> getTypeClass(Type genericType ) {
 		
-		ParameterizedType parameterizedType = null;
-		if (ParameterizedType.class.isAssignableFrom(fieldGenericType.getClass())) {
-			parameterizedType = (ParameterizedType)fieldGenericType;
-		}
-		
-		if (parameterizedType == null ) {
-			return null;
-		} 
-		
-		Type genericType = parameterizedType.getActualTypeArguments()[0];
-		if ("?".equals(genericType.toString())) {
+		if ("?".equals(genericType.getTypeName() ) ) {
 			return null;
 		}
 	
-		Class<?> collectionType = (Class<?>) genericType;
-		if (Object.class.equals(collectionType)) {
+		Class<?> genericTypeClass = (Class<?>) genericType;
+		if (Object.class.equals(genericTypeClass)) {
 			return null;
 		}
 		
-		return collectionType;
+		return genericTypeClass;
 	}
 
+	protected class TypeValue {
+		protected ITypes type;
+		protected Value<?> value;
+		protected TypeValue(ITypes type, Value<?> value) {
+			this.type = type;
+			this.value = value;
+		}
+	}
+	
+	protected TypeValue findType(Info info, String value, Class<?> genericClass, List<ITypes> availableTypes) throws InitializerException {
+		
+		try {
+			for (ITypes type : availableTypes) {	
+				Value<?> created = type.createObject(genericClass, null, info, value, null);
+				if (created.isPresent() ) {
+					return new TypeValue(type, created);
+				}
+			}
+			return null;
+		} catch (InitializerException cie ) {
+			if (cie.getStandardError() == WRONG_VALUE) {
+				throw new InitializerException (info, WRONG_VALUE_AT_POSITION, cie.getRootСause(), 0);
+			}
+			throw cie;
+		}
+	}
+	
+	protected Value<?> get(ITypes type, Info info, String value, Class<?> genericClass) throws InitializerException {
+		
+		try {
+			return type.createObject(genericClass, null, info, value, null);
+		} catch (InitializerException cie ) {
+			if (cie.getStandardError() == WRONG_VALUE) {
+				throw new InitializerException (info, WRONG_VALUE_AT_POSITION, cie.getRootСause(), 0);
+			}
+			throw cie;
+		}
+	}
 }

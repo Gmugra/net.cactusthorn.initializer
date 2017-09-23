@@ -26,7 +26,8 @@ import org.junit.runners.Suite.SuiteClasses;
 	SimplesTest.class,
 	DateTimeTest.class,
 	ArraysTest.class,
-	ListsTest.class
+	ListSetTest.class,
+	MapTest.class
 })
 public class AllTests {
 }

@@ -10,39 +10,17 @@
  ******************************************************************************/
 package net.cactusthorn.initializer.types;
 
-import static net.cactusthorn.initializer.InitializerException.StandardError.WRONG_VALUE;
-import static net.cactusthorn.initializer.InitializerException.StandardError.WRONG_VALUE_AT_POSITION;
-
 import java.util.*;
 import java.lang.reflect.*;
 
 import net.cactusthorn.initializer.InitializerException;
 import net.cactusthorn.initializer.annotations.Info;
 
-public class ListSetTypes  extends MultiValueTypes {
+public class ListSetTypes extends MultiValueTypes {
 	
 	@Override
 	public ListSetTypes clone() throws CloneNotSupportedException {
 		return (ListSetTypes)super.clone();
-	}
-
-	private ITypes set(ITypes initializer, List<Object> list, Info info, Class<?> collectionType, List<String> valueParts, int position) throws InitializerException {
-		
-		try {
-			
-			Value<?> created = initializer.createObject(collectionType, null, info, valueParts.get(position), null);
-			if (created.isPresent() ) {
-				
-				list.add(created.get());
-				return initializer;
-			}
-			return null;
-		} catch (InitializerException cie ) {
-			if (cie.getStandardError() == WRONG_VALUE) {
-				throw new InitializerException (info, WRONG_VALUE_AT_POSITION, cie.getRootСause(), position);
-			}
-			throw cie;
-		}
 	}
 	
 	private Constructor<?> getConstructor(Class<?> fieldType ) {
@@ -83,12 +61,13 @@ public class ListSetTypes  extends MultiValueTypes {
 		}
 	
 		try {
-			return clazz.getConstructor(Collection.class);
+			return clazz.getConstructor();
 		} catch (NoSuchMethodException|SecurityException e) {
 			return null;
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public Value<?> createObject(Class<?> fieldType, Type fieldGenericType, Info info, String propertyValue, List<ITypes> availableTypes) throws InitializerException {
 		
@@ -96,9 +75,16 @@ public class ListSetTypes  extends MultiValueTypes {
 			return Value.empty();
 		}
 	
-		Class<?> collectionType = getCollectionType(fieldGenericType);
-		if (collectionType == null) {
-			return Value.empty();
+		ParameterizedType parameterizedType = null;
+		if (ParameterizedType.class.isAssignableFrom(fieldGenericType.getClass())) {
+			parameterizedType = (ParameterizedType)fieldGenericType;
+		} else {
+			return  Value.empty();
+		}
+		
+		Type[] genericTypes = parameterizedType.getActualTypeArguments();
+		if (genericTypes.length != 1) {
+			Value.empty();
 		}
 		
 		Constructor<?> constructor = getConstructor(fieldType);
@@ -106,31 +92,32 @@ public class ListSetTypes  extends MultiValueTypes {
 			return Value.empty();
 		}
 		
-		List<String> valueParts = split(propertyValue);
-		
-		List<Object> list = new ArrayList<>();
-		
-		ITypes initializer = null;
-		for (ITypes simple : availableTypes) {					
-			
-			initializer = set(simple, list, info, collectionType, valueParts, 0);
-			if (initializer != null ) {
-				break;
-			}
-		}
-		if (initializer == null ) {
+		Class<?> collectionClass = getTypeClass(genericTypes[0]);
+		if (collectionClass == null) {
 			return Value.empty();
 		}
 		
-		for (int i = 1; i < valueParts.size(); i++ ) {
-			set(initializer, list, info, collectionType, valueParts, i);
-		}
-	
+		List<String> valueParts = split(propertyValue);
+		
+		Collection<Object> newCollection = null;
 		try {
-			return Value.of(constructor.newInstance(list));
+			newCollection = (Collection<Object>)constructor.newInstance();
 		} catch ( InvocationTargetException|IllegalAccessException|InstantiationException e ) {
 			throw new InitializerException(info, e);
 		}
 		
+		TypeValue typeValue = findType(info, valueParts.get(0), collectionClass, availableTypes);
+		if (typeValue == null) {
+			return Value.empty();
+		}
+		
+		newCollection.add(typeValue.value.get() );
+		
+		for (int i = 1; i < valueParts.size(); i++ ) {
+			Value<?> value = get(typeValue.type, info, valueParts.get(i), collectionClass);
+			newCollection.add(value.get() );
+		}
+		
+		return Value.of(newCollection);
 	}
 }

@@ -13,7 +13,7 @@ package net.cactusthorn.initializer;
 import net.cactusthorn.initializer.annotations.Info;
 
 
-public class InitializerException extends Exception {
+public class InitializerException extends RuntimeException {
 	
 	public enum StandardError {
 		

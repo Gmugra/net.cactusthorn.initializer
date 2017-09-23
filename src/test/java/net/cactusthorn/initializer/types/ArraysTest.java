@@ -56,7 +56,7 @@ public class ArraysTest {
 	}
 	
 	@Test
-	public void testDateArray() throws InitializerException, ParseException {
+	public void testDateArray() throws ParseException {
 
 		java.util.Date[] correct = new java.util.Date[]{SDF.parse("2017-10-10"),SDF.parse("2017-03-08"),SDF.parse("2017-11-15")};
 		bundle.clearProperties().put("datearr", "2017-10-10,2017-03-08,2017-11-15");
@@ -66,7 +66,7 @@ public class ArraysTest {
 	}
 	
 	@Test
-	public void testBigIntegerArray() throws InitializerException {
+	public void testBigIntegerArray() {
 		
 		BigInteger[] correct = new BigInteger[]{new BigInteger("10"),new BigInteger("100000"),new BigInteger("300000")};
 		bundle.clearProperties().put("biarr", "10,100000,300000");
@@ -76,7 +76,7 @@ public class ArraysTest {
 	}
 	
 	@Test
-	public void testStringArray() throws InitializerException {
+	public void testStringArray() {
 		
 		String[] correct = new String[]{"ssss","wwww","rrrr"};
 		bundle.clearProperties().put("sarr", "ssss,wwww,rrrr");
@@ -92,7 +92,7 @@ public class ArraysTest {
 	}
 	
 	@Test
-	public void testIntArray() throws InitializerException {
+	public void testIntArray() {
 		
 		int[] correct = new int[]{10,20,30};
 		bundle.clearProperties().put("iarr", "10,20,30");

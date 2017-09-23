@@ -49,7 +49,7 @@ public class PrimitivesTest {
 	double _double = -200.43d;
 	
 	@Test(expected = InitializerException.class)
-	public void testDoubleException() throws InitializerException {
+	public void testDoubleException() {
 		
 		bundle
 			.clearProperties()
@@ -59,7 +59,7 @@ public class PrimitivesTest {
 	}
 	
 	@Test
-	public void testDouble() throws InitializerException {
+	public void testDouble() {
 		
 		bundle.clearProperties();
 		initializer.initialize(bundle, this);
@@ -81,7 +81,7 @@ public class PrimitivesTest {
 	}
 	
 	@Test(expected = InitializerException.class)
-	public void testFloatException() throws InitializerException {
+	public void testFloatException() {
 		
 		bundle
 			.clearProperties()
@@ -91,7 +91,7 @@ public class PrimitivesTest {
 	}
 	
 	@Test
-	public void testFloat() throws InitializerException {
+	public void testFloat() {
 		
 		bundle.clearProperties();
 		initializer.initialize(bundle, this);
@@ -113,7 +113,7 @@ public class PrimitivesTest {
 	}
 	
 	@Test(expected = InitializerException.class)
-	public void testShortException() throws InitializerException {
+	public void testShortException() {
 		
 		bundle
 			.clearProperties()
@@ -123,7 +123,7 @@ public class PrimitivesTest {
 	}
 	
 	@Test
-	public void testShort() throws InitializerException {
+	public void testShort() {
 		
 		bundle.clearProperties();
 		initializer.initialize(bundle, this);
@@ -145,7 +145,7 @@ public class PrimitivesTest {
 	}
 	
 	@Test(expected = InitializerException.class)
-	public void testLongException() throws InitializerException {
+	public void testLongException() {
 		
 		bundle
 			.clearProperties()
@@ -155,7 +155,7 @@ public class PrimitivesTest {
 	}
 	
 	@Test
-	public void testLong() throws InitializerException {
+	public void testLong() {
 		
 		bundle.clearProperties();
 		initializer.initialize(bundle, this);
@@ -177,7 +177,7 @@ public class PrimitivesTest {
 	}
 	
 	@Test(expected = InitializerException.class)
-	public void testByteException() throws InitializerException {
+	public void testByteException() {
 		
 		bundle
 			.clearProperties()
@@ -187,7 +187,7 @@ public class PrimitivesTest {
 	}
 	
 	@Test
-	public void testByte() throws InitializerException {
+	public void testByte() {
 		
 		bundle.clearProperties();
 		initializer.initialize(bundle, this);
@@ -209,7 +209,7 @@ public class PrimitivesTest {
 	}
 	
 	@Test(expected = InitializerException.class)
-	public void testIntException() throws InitializerException {
+	public void testIntException() {
 		
 		bundle
 			.clearProperties()
@@ -219,7 +219,7 @@ public class PrimitivesTest {
 	}
 	
 	@Test
-	public void testInt() throws InitializerException {
+	public void testInt() {
 		
 		bundle.clearProperties();
 		initializer.initialize(bundle, this);
@@ -241,7 +241,7 @@ public class PrimitivesTest {
 	}
 	
 	@Test
-	public void testBoolean() throws InitializerException {
+	public void testBoolean() {
 		
 		bundle.clearProperties();
 		initializer.initialize(bundle, this);
@@ -269,7 +269,7 @@ public class PrimitivesTest {
 	}
 	
 	@Test
-	public void testChar() throws InitializerException {
+	public void testChar() {
 		
 		bundle.clearProperties();
 		initializer.initialize(bundle, this);

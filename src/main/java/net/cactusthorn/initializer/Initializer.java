@@ -31,6 +31,7 @@ public final class Initializer {
 		types.put(DateTimeTypes.class.getName(), new DateTimeTypes());
 		types.put(ListSetTypes.class.getName(), new ListSetTypes());
 		types.put(ArrayTypes.class.getName(), new ArrayTypes());
+		types.put(MapTypes.class.getName(), new MapTypes());
 	}
 	
 	public Initializer addInitializer(ITypes initializer) {
@@ -57,9 +58,7 @@ public final class Initializer {
 		//to be thread safe
 		List<ITypes> availableTypes = cloneTypes();
 		
-		for (Object object : collection) {
-			initialize(availableTypes, configBundle, object);
-		}
+		collection.forEach(object -> initialize(availableTypes, configBundle, object ) );
 	}
 	
 	public void initialize(ConfigPropertiesBundle configBundle, Object... objects) throws InitializerException {
@@ -97,12 +96,7 @@ public final class Initializer {
 		
 		for (Field field : clazz.getDeclaredFields() ) {
 			
-			Info info = null;
-			try {
-				info = Info.build(configBundle.getName(), clazz, field);
-			} catch (Exception e) {
-				throw new InitializerException(info, e);
-			}
+			Info info = Info.build(configBundle.getName(), clazz, field);
 				
 			if (info == null) {
 				
@@ -111,33 +105,24 @@ public final class Initializer {
 				continue;
 			}
 			
-			String configurationValue = getConfigurationValue(info, configBundle);
+			String propertyValue = getPropertyValue(info, configBundle);
 			
-			if(configurationValue == null ) {
+			if(propertyValue == null ) {
 				
 				//Property for the field is not present and it is permissible by policy, so -> do nothing
 				
 				continue;
 			}
-		
-			boolean set = false;
 			
-			for (ITypes initializer : availableTypes) {
+			if (!availableTypes.stream().anyMatch(t -> t.setObject(object, field, info, propertyValue, availableTypes) ) ) {
 				
-				if ( initializer.setObject(object, field, info, configurationValue, availableTypes) ) {
-					set = true;
-					break;
-				}
-			}
-			
-			if (!set) {
 				throw new InitializerException(info, StandardError.UNSUPPORTED_TYPE);
 			}
 		}
 		
 	}
 	
-	private String getConfigurationValue(Info info, ConfigPropertiesBundle configBundle) throws InitializerException {
+	private String getPropertyValue(Info info, ConfigPropertiesBundle configBundle) throws InitializerException {
 		
 		InitPropertyPolicy policy = info.getPolicy();
 		

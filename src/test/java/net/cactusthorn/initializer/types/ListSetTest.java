@@ -21,11 +21,10 @@ import java.util.*;
 
 import net.cactusthorn.initializer.ConfigPropertiesBundle;
 import net.cactusthorn.initializer.Initializer;
-import net.cactusthorn.initializer.InitializerException;
 import net.cactusthorn.initializer.annotations.InitProperty;
 import static net.cactusthorn.initializer.annotations.InitPropertyPolicy.OPTIONAL;
 
-public class ListsTest {
+public class ListSetTest {
 
 	static SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd");
 	
@@ -69,7 +68,7 @@ public class ListsTest {
 	Set<java.util.Date> dateset;
 	
 	@Test
-	public void testDateSet() throws InitializerException, ParseException {
+	public void testDateSet() throws ParseException {
 		
 		/*HashSet<java.util.Date> correct = new HashSet<>();
 		correct.add(SDF.parse("2017-10-10"));
@@ -83,7 +82,7 @@ public class ListsTest {
 	}
 	
 	@Test
-	public void testLinkedHashSet() throws InitializerException {
+	public void testLinkedHashSet() {
 		
 		linkedHashSet = null;
 		bundle.clearProperties().put("linkedHashSet", "a,b,c,c,d").put("xxxx", "ddd");
@@ -93,7 +92,7 @@ public class ListsTest {
 	}
 	
 	@Test
-	public void testAbstractSet() throws InitializerException {
+	public void testAbstractSet() {
 		
 		abstractSet = null;
 		bundle.clearProperties().put("abstractSet", "a,b,c,c,d");
@@ -103,7 +102,7 @@ public class ListsTest {
 	}
 
 	@Test
-	public void testTreeSet() throws InitializerException {
+	public void testTreeSet() {
 		
 		treeSet = null;
 		bundle.clearProperties().put("treeSet", "a,b,c,c,d");
@@ -113,7 +112,7 @@ public class ListsTest {
 	}
 	
 	@Test
-	public void testHashSet() throws InitializerException {
+	public void testHashSet() {
 		
 		hashSet = null;
 		bundle.clearProperties().put("hashSet", "a,b,c,c,d");
@@ -123,7 +122,7 @@ public class ListsTest {
 	}
 	
 	@Test
-	public void testLinkedList() throws InitializerException {
+	public void testLinkedList() {
 		
 		linkedList = null;
 		bundle.clearProperties().put("linkedList", "a,b,c,d");
@@ -132,7 +131,7 @@ public class ListsTest {
 	}
 	
 	@Test
-	public void testAbstractSequentialList() throws InitializerException {
+	public void testAbstractSequentialList() {
 		
 		abstractList = null;
 		bundle.clearProperties().put("abstractSequentialList", "a,b,c,d");
@@ -141,7 +140,7 @@ public class ListsTest {
 	}
 	
 	@Test
-	public void testAbstractList() throws InitializerException {
+	public void testAbstractList() {
 		
 		abstractList = null;
 		bundle.clearProperties().put("abstractList", "a,b,c,d");
@@ -150,7 +149,7 @@ public class ListsTest {
 	}
 	
 	@Test
-	public void testArrayList() throws InitializerException {
+	public void testArrayList() {
 		
 		arrayList = null;
 		bundle.clearProperties().put("arrayList", "a,b,c,d");
@@ -159,7 +158,7 @@ public class ListsTest {
 	}
 	
 	@Test
-	public void testList() throws InitializerException {
+	public void testList() {
 		
 		list = null;
 		bundle.clearProperties().put("list", "a,b,c,d,d,d");
@@ -169,7 +168,7 @@ public class ListsTest {
 	}
 	
 	@Test
-	public void testSortedSet() throws InitializerException {
+	public void testSortedSet() {
 
 		sortedSet = null;
 		bundle.clearProperties().put("sortedSet", "a,b,c,d,d,d");
@@ -179,7 +178,7 @@ public class ListsTest {
 	}
 	
 	@Test
-	public void testSet() throws InitializerException {
+	public void testSet() {
 		
 		set = null;
 		bundle.clearProperties().put("set", "a,b,c,d,d,d");

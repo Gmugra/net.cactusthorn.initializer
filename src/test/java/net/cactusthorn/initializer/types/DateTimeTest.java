@@ -41,7 +41,7 @@ public class DateTimeTest {
 	java.util.Calendar calendar;
 	
 	@Test
-	public void testCustomFormat() throws InitializerException {
+	public void testCustomFormat() {
 		
 		Initializer local = 
 			new Initializer().addDateTimeFormatPattern("dd.MM.yyyy");
@@ -54,7 +54,7 @@ public class DateTimeTest {
 	}
 	
 	@Test(expected = InitializerException.class)
-	public void testUtilDateException() throws InitializerException {
+	public void testUtilDateException() {
 		
 		date = null;
 		
@@ -63,7 +63,7 @@ public class DateTimeTest {
 	}
 	
 	@Test
-	public void testCalendar() throws InitializerException {
+	public void testCalendar() {
 		
 		bundle.clearProperties().put("calendar", "2017-09-17T11:16:50+01:00");
 		initializer.initialize(bundle, this);
@@ -88,7 +88,7 @@ public class DateTimeTest {
 	
 	
 	@Test
-	public void testSqlDate() throws InitializerException {
+	public void testSqlDate() {
 		
 		bundle.clearProperties().put("sqldate", "2017-09-17T11:16:50+01:00");
 		initializer.initialize(bundle, this);
@@ -114,7 +114,7 @@ public class DateTimeTest {
 	}
 
 	@Test
-	public void testUtilDate() throws InitializerException {
+	public void testUtilDate() {
 		
 		date = null;
 		
