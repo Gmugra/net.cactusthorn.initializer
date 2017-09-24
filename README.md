@@ -47,14 +47,14 @@ import net.cactusthorn.initializer.Initializer;
 
 public class MyInit {
 	
-	private static final Initializer initializer = new Initializer();
+	private static final Initializer initializer = new Initializer().setValuesSeparator(',').trimMultiValues(true);
 	
 	public static void main(String... args) {
 		
 		Map<String,String> prop = new HashMap<>();
 		prop.put("check", "true");
-		prop.put("values", "1000,2000,3000,4000,5000,6000,7000,8000,9000,7406529596973765");
-		prop.put("dates", "first=2017-09-17T11:16:50+01:00,secod=2017-10-05,third=2017-09-17T11:16:50");
+		prop.put("values", "1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 7406529596973765");
+		prop.put("dates", "first=2017-09-17T11:16:50+01:00 , secod=2017-10-05 , third=2017-09-17T11:16:50");
 		
 		MyClass myClass =  new MyClass();
 	
@@ -68,7 +68,7 @@ public class MyInit {
 1. all primitive and simple object types, StringBuffer, StringBuilder, BigDecimal, BigInteger, java.util.Date, java.sql.Date, java.util.Calendar  
 2. one-dimensional arrays of any type which described above
 3. basic Lists & Sets with generic of any types which described above
-4. basic Maps with with generic of any types which described above as key or value
+4. basic Maps with generic of any types which described above as key or value
 5. Customizing date/time formats
 6. Requirements policies for properties
 7. Naming (@InitPropertyName)

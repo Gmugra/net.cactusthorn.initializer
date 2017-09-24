@@ -11,7 +11,6 @@
 package net.cactusthorn.initializer;
 
 import java.util.*;
-
 import java.lang.reflect.*;
 
 import net.cactusthorn.initializer.annotations.*;
@@ -21,24 +20,32 @@ import static net.cactusthorn.initializer.annotations.InitPropertyPolicy.*;
 
 public final class Initializer {
 	
+	private char valuesSep = ',';
+	private char pairSep = '=';
+	private boolean trimMultiValues;
+	
 	private Set<String> additionalDateTimeFormatPatterns = new HashSet<>();
 	
 	private Map<String, ITypes> types = new HashMap<>();
 	
 	public Initializer() {
-		types.put(PrimitiveTypes.class.getName(), new PrimitiveTypes());
-		types.put(SimpleTypes.class.getName(), new SimpleTypes());
-		types.put(DateTimeTypes.class.getName(), new DateTimeTypes());
-		types.put(ListSetTypes.class.getName(), new ListSetTypes());
-		types.put(ArrayTypes.class.getName(), new ArrayTypes());
-		types.put(MapTypes.class.getName(), new MapTypes());
+		
+		addTypes(new PrimitiveTypes());
+		addTypes(new SimpleTypes());
+		addTypes(new DateTimeTypes());
+		addTypes(new ListSetTypes());
+		addTypes(new ArrayTypes());
+		addTypes(new MapTypes());
 	}
 	
-	public Initializer addInitializer(ITypes initializer) {
+	public Initializer addTypes(ITypes types) {
 		
-		String name = initializer.getClass().getName();
-		if (!types.containsKey(name) ) {
-			types.put(name, initializer);
+		String name = types.getClass().getName();
+		if (!this.types.containsKey(name) ) {
+			
+			additionalDateTimeFormatPatterns.forEach(p -> types.addDateTimeFormatPattern(p));
+			types.setValuesSeparator(valuesSep).setPairSeparator(pairSep).trimMultiValues(trimMultiValues);
+			this.types.put(name, types);
 		}
 		return this;
 	}
@@ -46,6 +53,21 @@ public final class Initializer {
 	public Initializer addDateTimeFormatPattern(String formatPattern) {
 		
 		additionalDateTimeFormatPatterns.add(formatPattern);
+		return this;
+	}
+	
+	public Initializer setValuesSeparator(char separator) {
+		this.valuesSep = separator;
+		return this;
+	}
+	
+	public Initializer setPairSeparator(char separator) {
+		this.pairSep = separator;
+		return this;
+	}
+	
+	public Initializer trimMultiValues(boolean trimMultiValues) {
+		this.trimMultiValues = trimMultiValues;
 		return this;
 	}
 	
@@ -100,6 +122,7 @@ public final class Initializer {
 			try {
 				ITypes cloned = type.clone();
 				additionalDateTimeFormatPatterns.forEach(p -> cloned.addDateTimeFormatPattern(p));
+				cloned.setValuesSeparator(valuesSep).setPairSeparator(pairSep).trimMultiValues(trimMultiValues);
 				clonedTypes.add(cloned);
 			} catch (CloneNotSupportedException e) {
 				// ???

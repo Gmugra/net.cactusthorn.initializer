@@ -22,9 +22,41 @@ import net.cactusthorn.initializer.annotations.Info;
 
 public abstract class MultiValueTypes implements ITypes {
 
+	private char valuesSep = ',';
+	private String valuesSepAsStr = ",";
+	private String valuesSepAsEscStr = "\\,";
+	
+	private char pairSep = '=';
+	private String pairSepAsStr = "=";
+	private String pairSepAsEscStr = "\\=";
+	
+	private boolean trimMultiValues;
+	
 	@Override
 	public ITypes clone() throws CloneNotSupportedException {
 		return (ITypes)super.clone();
+	}
+	
+	@Override
+	public ITypes setValuesSeparator(char separator) {
+		this.valuesSep = separator;
+		this.valuesSepAsStr = String.valueOf(this.valuesSep );
+		this.valuesSepAsEscStr = "\\" + this.valuesSep;
+		return this;
+	}
+	
+	@Override
+	public ITypes setPairSeparator(char separator) {
+		this.pairSep = separator;
+		this.pairSepAsStr = String.valueOf(this.pairSep );
+		this.pairSepAsEscStr = "\\" + this.pairSep;
+		return this;
+	}
+	
+	@Override
+	public ITypes trimMultiValues(boolean trimMultiValues) {
+		this.trimMultiValues = trimMultiValues;
+		return this;
 	}
 	
 	/*
@@ -32,10 +64,12 @@ public abstract class MultiValueTypes implements ITypes {
 	 */
 	//TODO need something more clever: too many replaces
 	private String deleteEscapingComma(String str ) {
-		return str.replace("\\\\","\\").replace("\\,",",");
+		String result = str.replace("\\\\","\\").replace(valuesSepAsEscStr, valuesSepAsStr);
+		return trimMultiValues ? result.trim() : result; 
 	}
 	private String deleteEscapingCommaEquals(String str ) {
-		return str.replace("\\\\","\\").replace("\\,",",").replace("\\=","=");
+		String result = str.replace("\\\\","\\").replace(valuesSepAsEscStr, valuesSepAsStr).replace(pairSepAsEscStr,pairSepAsStr);
+		return trimMultiValues ? result.trim() : result; 
 	}
 	
 	protected List<String> split(String str) {
@@ -46,7 +80,7 @@ public abstract class MultiValueTypes implements ITypes {
 		int bs_couner = 0;
 		for (int i = 0 ; i < str.length(); i++ ) {
 			
-			if (str.charAt(i) == ',' && bs_couner % 2 == 0  ) {
+			if (str.charAt(i) == valuesSep && bs_couner % 2 == 0  ) {
 				arr.add(deleteEscapingComma(str.substring(pos, i) ) );
 				pos = i + 1;
 				bs_couner = 0;
@@ -73,7 +107,7 @@ public abstract class MultiValueTypes implements ITypes {
 		int pos = 0;
 		int bs_couner = 0;
 		for (int i = 0 ; i < str.length(); i++ ) {
-			if (str.charAt(i) == ',' && bs_couner % 2 == 0 ) {
+			if (str.charAt(i) == valuesSep && bs_couner % 2 == 0 ) {
 				
 				if (!"".equals(currentKey) ) {
 					lastValue = deleteEscapingCommaEquals(str.substring(pos, i) );
@@ -83,7 +117,7 @@ public abstract class MultiValueTypes implements ITypes {
 				
 				pos = i + 1;
 				bs_couner = 0;
-			} else if (str.charAt(i) == '=' && bs_couner % 2 == 0 ) {
+			} else if (str.charAt(i) == pairSep && bs_couner % 2 == 0 ) {
 				
 				if (currentKey != null && !currentKey.isEmpty() && lastValue == null ) {
 					arr.add(StringsPair.of(currentKey));

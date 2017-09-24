@@ -49,10 +49,11 @@ public class DateTimeTypes implements ITypes {
 	}
 	
 	@Override
-	public void addDateTimeFormatPattern(String formatPattern) {	
+	public ITypes addDateTimeFormatPattern(String formatPattern) {	
 		if (!formats.containsKey(formatPattern) ) {
 			formats.put(formatPattern, new SimpleDateFormat(formatPattern));
 		}
+		return this;
 	}
 	
 	@Override

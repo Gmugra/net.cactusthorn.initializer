@@ -16,31 +16,12 @@ import java.lang.reflect.Type;
 
 import net.cactusthorn.initializer.InitializerException;
 import net.cactusthorn.initializer.annotations.Info;
-import static net.cactusthorn.initializer.InitializerException.StandardError.*;
 
 public class ArrayTypes extends MultiValueTypes {
 		
 	@Override
 	public ArrayTypes clone() throws CloneNotSupportedException {
 		return (ArrayTypes)super.clone();
-	}
-
-	private ITypes set(ITypes initializer, Object array, Info info, Class<?> arrayType, List<String> valueParts, int position) throws InitializerException {
-		
-		try {
-			
-			Value<?> created = initializer.createObject(arrayType, null, info, valueParts.get(position), null);
-			if (created.isPresent() ) {
-				Array.set(array, position, created.get());
-				return initializer;
-			}
-			return null;
-		} catch (InitializerException cie ) {
-			if (cie.getStandardError() == WRONG_VALUE) {
-				throw new InitializerException (info, WRONG_VALUE_AT_POSITION, cie.getRootСause(), position);
-			}
-			throw cie;
-		}
 	}
 	
 	@Override
@@ -59,22 +40,17 @@ public class ArrayTypes extends MultiValueTypes {
 		
 		List<String> valueParts = split(propertyValue);
 		
-		Object array = Array.newInstance(arrayType, valueParts.size());
-		
-		ITypes initializer = null;
-		for (ITypes simple : availableTypes) {					
-			
-			initializer = set(simple, array, info, arrayType, valueParts, 0);
-			if (initializer != null ) {
-				break;
-			}
-		}
-		if (initializer == null ) {
+		TypeValue typeValue = findType(info, valueParts.get(0), arrayType, availableTypes);
+		if (typeValue == null) {
 			return Value.empty();
 		}
 		
+		Object array = Array.newInstance(arrayType, valueParts.size());
+		Array.set(array, 0, typeValue.value.get());
+		
 		for (int i = 1; i < valueParts.size(); i++ ) {
-			set(initializer, array, info, arrayType, valueParts, i);
+			Value<?> value = get(typeValue.type, info, valueParts.get(i), arrayType);
+			Array.set(array, i, value.get());
 		}
 		
 		return Value.of(array);

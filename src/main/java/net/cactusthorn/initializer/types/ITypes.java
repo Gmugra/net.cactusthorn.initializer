@@ -20,8 +20,20 @@ public interface ITypes extends Cloneable {
 	
 	ITypes clone() throws CloneNotSupportedException;
 	
-	default void addDateTimeFormatPattern(String formatPattern) {
-		//by default initializer sure do not support date/time formats
+	default ITypes addDateTimeFormatPattern(String formatPattern) {
+		return this;
+	}
+	
+	default ITypes setValuesSeparator(char separator) {
+		return this;
+	}
+	
+	default ITypes setPairSeparator(char separator) {
+		return this;
+	}
+	
+	default ITypes trimMultiValues(boolean trimMultiValues) {
+		return this;
 	}
 	
 	default boolean setObject(Object object, Field field, Info info, String propertyValue, List<ITypes> availableTypes) 

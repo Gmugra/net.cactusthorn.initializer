@@ -26,7 +26,6 @@ import static net.cactusthorn.initializer.annotations.InitPropertyPolicy.*;
 
 public class MapTest {
 	
-	Initializer initializer = new Initializer();
 	ConfigPropertiesBundle bundle = new ConfigPropertiesBundle("test");
 	
 	@InitPropertyName("mapA")
@@ -42,8 +41,24 @@ public class MapTest {
 	@InitProperty(OPTIONAL)
 	IdentityHashMap<String,BigInteger> identMap;
 	
+	@InitProperty
+	TreeMap<Integer,Float> tm;
+
+	@Test
+	public void testTreeMap() throws ParseException {
+		
+		Initializer initializer = new Initializer().setValuesSeparator('|').setPairSeparator('_').trimMultiValues(true);
+		
+		bundle.clearProperties().put("tm", " 10_2017 | 20_300 | 30_44494 ");
+		initializer.initialize(bundle, this);
+	
+		assertEquals(tm.size(),3);
+	}
+	
 	@Test
 	public void testIdentMap() throws ParseException {
+		
+		Initializer initializer = new Initializer();
 		
 		bundle.clearProperties().put("identMap", "A=2017,B=300,C=44494994944747474747474");
 		initializer.initialize(bundle, this);
@@ -52,6 +67,8 @@ public class MapTest {
 
 	@Test
 	public void testUnsupported() throws ParseException {
+		
+		Initializer initializer = new Initializer();
 		
 		try {
 			bundle.clearProperties().put("unsupported", "10=S");
@@ -65,6 +82,8 @@ public class MapTest {
 	@Test
 	public void testDateSet() throws ParseException {
 		
+		Initializer initializer = new Initializer();
+		
 		bundle.clearProperties().put("intDateMap", "10=2017-10-10,20=2017-03-08,30=2017-11-15");
 		initializer.initialize(bundle, this);
 		//System.out.println(intDateMap);
@@ -73,6 +92,8 @@ public class MapTest {
 	
 	@Test
 	public void testSimpleMap() {
+		
+		Initializer initializer = new Initializer();
 		
 		bundle.clearProperties().put("mapA", "a=10,b=20,c=30,AB\\=CD=5000");
 		initializer.initialize(bundle, this);
