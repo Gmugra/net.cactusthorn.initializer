@@ -55,7 +55,7 @@ public class MyInit {
 		Map<String,String> prop = new HashMap<>();
 		prop.put("check", "true");
 		prop.put("values", "1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 7406529596973765");
-		prop.put("dates", "first=2017-09-17T11:16:50+01:00 , secod=2017-10-05 , third=2017-09-17T11:16:50");
+		prop.put("dates", "first=2017-09-17T11:16:50+01:00 , second=2017-10-05 , third=2017-09-17T11:16:50");
 		
 		MyClass myClass =  new MyClass();
 	

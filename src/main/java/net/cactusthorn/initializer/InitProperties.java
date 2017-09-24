@@ -10,6 +10,12 @@
  ******************************************************************************/
 package net.cactusthorn.initializer;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Properties;
@@ -36,6 +42,22 @@ public class InitProperties {
 		
 		properties.stringPropertyNames().forEach(n -> $new.put(n, properties.getProperty(n)));
 		return $new;
+	}
+	
+	public static InitProperties load(Path path) throws IOException {
+		Properties utilProperties = new Properties();
+		try (BufferedReader buf = Files.newBufferedReader(path ) ) {
+			utilProperties.load(buf);
+		}
+		return from(utilProperties);
+	}
+	
+	public static InitProperties loadFromXML(Path path) throws IOException {
+		Properties utilProperties = new Properties();
+		try (InputStream buf = Files.newInputStream(path, StandardOpenOption.READ) ) {
+			utilProperties.loadFromXML(buf);
+		}
+		return from(utilProperties);
 	}
 	
 	public InitProperties setName(String name) {

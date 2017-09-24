@@ -33,7 +33,23 @@ public class InitPropertiesTest {
 	public void init() {
 		prop.put("check", "true");
 		prop.put("values", "1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 7406529596973765");
-		prop.put("dates", "first=2017-09-17T11:16:50+01:00 , secod=2017-10-05 , third=2017-09-17T11:16:50");
+		prop.put("dates", "first=2017-09-17T11:16:50+01:00 , second=2017-10-05 , third=2017-09-17T11:16:50");
+	}
+
+	@Test
+	public void testUtilXmlPropertiesLoad() throws URISyntaxException, IOException {
+		
+		Path path = Paths.get(getClass().getClassLoader().getResource("init.xml").toURI());
+		InitProperties ip = InitProperties.loadFromXML(path);	
+		assertTrue(ip.contains("dates"));
+	}
+	
+	@Test
+	public void testUtilPropertiesLoad() throws URISyntaxException, IOException {
+		
+		Path path = Paths.get(getClass().getClassLoader().getResource("init.properties").toURI());
+		InitProperties ip = InitProperties.load(path);	
+		assertTrue(ip.contains("dates"));
 	}
 
 	@Test
