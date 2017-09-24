@@ -43,6 +43,10 @@ public class InitializerException extends RuntimeException {
 	//I know about String.format, but I hate unreadable place-holders
 	private static String format(Info info, String messageTemplate, int position ) {
 		
+		if (info == null ) {
+			return messageTemplate.replace("{position}", String.valueOf(position));
+		}
+		
 		return
 			messageTemplate
 				.replace("{field}", info.getField().getName())

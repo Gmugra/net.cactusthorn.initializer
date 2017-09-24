@@ -40,22 +40,22 @@ public class ListSetTypes extends MultiValueTypes {
 			}
 		} else {
 		
-			if (AbstractList.class.equals(fieldType) ) {
-				clazz = ArrayList.class;
-			} else if (AbstractSequentialList.class.equals(fieldType) ) {
-				clazz = LinkedList.class;
-			} else if (ArrayList.class.equals(fieldType) ) {
+			if (ArrayList.class.equals(fieldType) ) {
 				clazz = ArrayList.class;
 			} else if (LinkedList.class.equals(fieldType) ) {
 				clazz = LinkedList.class;
-			} else if (AbstractSet.class.equals(fieldType) ) {
-				clazz = HashSet.class;
 			} else if (HashSet.class.equals(fieldType) ) {
 				clazz = HashSet.class;
 			} else if (LinkedHashSet.class.equals(fieldType) ) {
 				clazz = LinkedHashSet.class;
 			} else if (TreeSet.class.equals(fieldType) ) {
 				clazz = TreeSet.class;
+			} else if (AbstractSequentialList.class.equals(fieldType) ) {
+				clazz = LinkedList.class;
+			} else if (AbstractList.class.equals(fieldType) ) {
+				clazz = ArrayList.class;
+			} else if (AbstractSet.class.equals(fieldType) ) {
+				clazz = HashSet.class;
 			} else {
 				return null;
 			}

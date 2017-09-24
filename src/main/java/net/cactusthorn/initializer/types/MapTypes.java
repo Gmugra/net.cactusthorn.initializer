@@ -28,30 +28,33 @@ public class MapTypes extends MultiValueTypes {
 	
 	@SuppressWarnings("unchecked")
 	protected Constructor<? extends Map<Object,Object>> getConstructor(Class<?> fieldType) {
+		
 		Class<?> clazz = null;
 		if (fieldType.isInterface() ) {
-			if (Map.class.isAssignableFrom(fieldType) ) {
-				clazz = HashMap.class;
+			
+			if (NavigableMap.class.isAssignableFrom(fieldType) ) {
+				clazz = TreeMap.class;
 			} else if (SortedMap.class.isAssignableFrom(fieldType) ) {
 				clazz = TreeMap.class;
-			} else if (NavigableMap.class.isAssignableFrom(fieldType) ) {
-				clazz = TreeMap.class;
+			} else if (Map.class.isAssignableFrom(fieldType) ) {
+				clazz = HashMap.class;
 			} else {
 				return null;
 			}
 		} else {
-			if (AbstractMap.class.isAssignableFrom(fieldType) ) {
-				clazz = HashMap.class;
-			} if (HashMap.class.isAssignableFrom(fieldType) ) {
-				clazz = HashMap.class;
-			} else if (TreeMap.class.isAssignableFrom(fieldType) ) {
+			
+			if (TreeMap.class.equals(fieldType) ) {
 				clazz = TreeMap.class;
-			} else if (LinkedHashMap.class.isAssignableFrom(fieldType) ) {
+			} else if (LinkedHashMap.class.equals(fieldType) ) {
 				clazz = LinkedHashMap.class;
-			} else if (IdentityHashMap.class.isAssignableFrom(fieldType) ) {
+			} else if (IdentityHashMap.class.equals(fieldType) ) {
 				clazz = IdentityHashMap.class;
-			} else if (WeakHashMap.class.isAssignableFrom(fieldType) ) {
+			} else if (WeakHashMap.class.equals(fieldType) ) {
 				clazz = WeakHashMap.class;
+			} else if (HashMap.class.equals(fieldType) ) {
+				clazz = HashMap.class;
+			} else if (AbstractMap.class.equals(fieldType) ) {
+				clazz = HashMap.class;
 			} else {
 				return null;
 			}

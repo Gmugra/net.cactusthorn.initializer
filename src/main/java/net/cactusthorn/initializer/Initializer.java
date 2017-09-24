@@ -30,22 +30,50 @@ public final class Initializer {
 	
 	public Initializer() {
 		
-		addTypes(new PrimitiveTypes());
-		addTypes(new SimpleTypes());
-		addTypes(new DateTimeTypes());
-		addTypes(new ListSetTypes());
-		addTypes(new ArrayTypes());
-		addTypes(new MapTypes());
+		addTypes(PrimitiveTypes.class);
+		addTypes(SimpleTypes.class);
+		addTypes(DateTimeTypes.class);
+		addTypes(ListSetTypes.class);
+		addTypes(ArrayTypes.class);
+		addTypes(MapTypes.class);
 	}
 	
-	public Initializer addTypes(ITypes types) {
+	/*
+	 * Note: do not support not static inner classes
+	 */
+	public Initializer addTypes(Class<? extends ITypes> types) {
+		
+		String name = types.getName();
+		if (!this.types.containsKey(name) ) {
+		
+			try {
+				
+				Constructor<? extends ITypes> constructor = types.getDeclaredConstructor();
+				boolean isAccessible = constructor.isAccessible();
+				constructor.setAccessible(true);
+				ITypes t = constructor.newInstance();
+				constructor.setAccessible(isAccessible);
+				
+				additionalDateTimeFormatPatterns.forEach(p -> t.addDateTimeFormatPattern(p));
+				t.setValuesSeparator(valuesSep).setPairSeparator(pairSep).trimMultiValues(trimMultiValues);
+				this.types.put(name, t);
+			} catch (NoSuchMethodException|InvocationTargetException|IllegalAccessException|InstantiationException e) {
+				e.printStackTrace();
+				throw new InitializerException(null, e);
+			}
+		}
+		return this;
+	}
+	
+	public Initializer addTypes(ITypes types) throws CloneNotSupportedException {
 		
 		String name = types.getClass().getName();
 		if (!this.types.containsKey(name) ) {
 			
-			additionalDateTimeFormatPatterns.forEach(p -> types.addDateTimeFormatPattern(p));
-			types.setValuesSeparator(valuesSep).setPairSeparator(pairSep).trimMultiValues(trimMultiValues);
-			this.types.put(name, types);
+			ITypes cloned = types.clone();	
+			additionalDateTimeFormatPatterns.forEach(p -> cloned.addDateTimeFormatPattern(p));
+			cloned.setValuesSeparator(valuesSep).setPairSeparator(pairSep).trimMultiValues(trimMultiValues);
+			this.types.put(name, cloned);
 		}
 		return this;
 	}
@@ -71,7 +99,7 @@ public final class Initializer {
 		return this;
 	}
 	
-	public void initialize(Map<String,String> configMap, Collection<?> collection) throws InitializerException {
+	public void initialize(Map<String,String> configMap, Collection<?> collection) {
 		
 		ConfigPropertiesBundle configBundle = new ConfigPropertiesBundle("default");
 		if (configMap != null) {
@@ -80,7 +108,7 @@ public final class Initializer {
 		initialize(configBundle, collection);
 	}
 	
-	public void initialize(Map<String,String> configMap, Object... objects) throws InitializerException {
+	public void initialize(Map<String,String> configMap, Object... objects) {
 		
 		ConfigPropertiesBundle configBundle = new ConfigPropertiesBundle("default");
 		if (configMap != null) {
@@ -89,7 +117,7 @@ public final class Initializer {
 		initialize(configBundle, objects);
 	}
 
-	public void initialize(ConfigPropertiesBundle configBundle, Collection<?> collection) throws InitializerException {
+	public void initialize(ConfigPropertiesBundle configBundle, Collection<?> collection) {
 		
 		if (collection == null || collection.isEmpty() ) {
 			return;
@@ -101,7 +129,7 @@ public final class Initializer {
 		collection.forEach(object -> initialize(availableTypes, configBundle, object ) );
 	}
 	
-	public void initialize(ConfigPropertiesBundle configBundle, Object... objects) throws InitializerException {
+	public void initialize(ConfigPropertiesBundle configBundle, Object... objects) {
 		
 		if (objects == null || objects.length == 0 ) {
 			return;
@@ -131,7 +159,7 @@ public final class Initializer {
 		return clonedTypes;
 	}
 	
-	private void initialize(List<ITypes> availableTypes, ConfigPropertiesBundle configBundle, Object object) throws InitializerException {
+	private void initialize(List<ITypes> availableTypes, ConfigPropertiesBundle configBundle, Object object) {
 		
 		Class<?> clazz = object.getClass();
 		
@@ -163,7 +191,7 @@ public final class Initializer {
 		
 	}
 	
-	private String getPropertyValue(Info info, ConfigPropertiesBundle configBundle) throws InitializerException {
+	private String getPropertyValue(Info info, ConfigPropertiesBundle configBundle) {
 		
 		InitPropertyPolicy policy = info.getPolicy();
 		
