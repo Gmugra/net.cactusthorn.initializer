@@ -98,38 +98,17 @@ public final class Initializer {
 		this.trimMultiValues = trimMultiValues;
 		return this;
 	}
-	
-	public void initialize(Map<String,String> configMap, Collection<?> collection) {
-		
-		ConfigPropertiesBundle configBundle = new ConfigPropertiesBundle("default");
-		if (configMap != null) {
-			configBundle.putAll(configMap);
-		}
-		initialize(configBundle, collection);
-	}
-	
-	public void initialize(Map<String,String> configMap, Object... objects) {
-		
-		ConfigPropertiesBundle configBundle = new ConfigPropertiesBundle("default");
-		if (configMap != null) {
-			configBundle.putAll(configMap);
-		}
-		initialize(configBundle, objects);
-	}
 
-	public void initialize(ConfigPropertiesBundle configBundle, Collection<?> collection) {
+	public void initialize(InitProperties configBundle, Collection<?> collection) {
 		
 		if (collection == null || collection.isEmpty() ) {
 			return;
 		}
 		
-		//to be thread safe
-		List<ITypes> availableTypes = cloneTypes();
-		
-		collection.forEach(object -> initialize(availableTypes, configBundle, object ) );
+		initialize(configBundle, collection.toArray() );
 	}
 	
-	public void initialize(ConfigPropertiesBundle configBundle, Object... objects) {
+	public void initialize(InitProperties configBundle, Object... objects) {
 		
 		if (objects == null || objects.length == 0 ) {
 			return;
@@ -159,7 +138,7 @@ public final class Initializer {
 		return clonedTypes;
 	}
 	
-	private void initialize(List<ITypes> availableTypes, ConfigPropertiesBundle configBundle, Object object) {
+	private void initialize(List<ITypes> availableTypes, InitProperties configBundle, Object object) {
 		
 		Class<?> clazz = object.getClass();
 		
@@ -191,7 +170,7 @@ public final class Initializer {
 		
 	}
 	
-	private String getPropertyValue(Info info, ConfigPropertiesBundle configBundle) {
+	private String getPropertyValue(Info info, InitProperties configBundle) {
 		
 		InitPropertyPolicy policy = info.getPolicy();
 		

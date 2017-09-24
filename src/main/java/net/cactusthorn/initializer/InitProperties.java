@@ -12,39 +12,55 @@ package net.cactusthorn.initializer;
 
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Properties;
 
-public class ConfigPropertiesBundle {
+public class InitProperties {
 
-	private String name = "";
+	private String name = "default";
 	private Map<String,String> properties = new HashMap<>();
 	
-	public ConfigPropertiesBundle(String name) {
-		this.name = name;
+	public InitProperties() {
 	}
 	
-	public ConfigPropertiesBundle(String name, Map<String,String> properties ) {
+	public static InitProperties from(Map<String,String> properties) {
 		
+		return new InitProperties().putAll(properties);
+	}
+	
+	public static InitProperties from(Properties properties) {
+		
+		InitProperties $new = new InitProperties();
+		if (properties == null) {
+			return $new;
+		}
+		
+		properties.stringPropertyNames().forEach(n -> $new.put(n, properties.getProperty(n)));
+		return $new;
+	}
+	
+	public InitProperties setName(String name) {
 		this.name = name;
-		putAll(properties);
+		return this;
 	}
 	
 	public String getName() {
 		return name;
 	}
 	
-	public ConfigPropertiesBundle put(String propertyName, Object propertyValue) {
+	public <T> InitProperties put(String propertyName, T propertyValue) {
 		
 		properties.put(propertyName, propertyValue == null ? null : propertyValue.toString());
-		
 		return this;
 	}
 	
-	public ConfigPropertiesBundle putAll(Map<String,String> properties) {
-		this.properties.putAll(properties);
+	public InitProperties putAll(Map<String,String> properties) {
+		if (properties != null) {
+			this.properties.putAll(properties);
+		}
 		return this;
 	}
 	
-	public ConfigPropertiesBundle clearProperties() {
+	public InitProperties clear() {
 		properties.clear();
 		return this;
 	}
@@ -53,7 +69,7 @@ public class ConfigPropertiesBundle {
 		return properties.containsKey(name );
 	}
 
-	public String get(String name) {
-		return properties.get(name);
+	public String get(String propertyName) {
+		return properties.get(propertyName);
 	}
 }

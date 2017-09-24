@@ -11,16 +11,16 @@
 package net.cactusthorn.initializer;
 
 import org.junit.Test;
+import static org.junit.Assert.*;
 
 import static net.cactusthorn.initializer.InitializerException.StandardError.WRONG_VALUE;
-import static org.junit.Assert.*;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Type;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-import net.cactusthorn.initializer.ConfigPropertiesBundle;
+import net.cactusthorn.initializer.InitProperties;
 import net.cactusthorn.initializer.Initializer;
 import net.cactusthorn.initializer.InitializerException;
 import net.cactusthorn.initializer.annotations.Info;
@@ -31,7 +31,7 @@ import net.cactusthorn.initializer.types.Value;
 
 public class CustomTypesTest {
 	
-	ConfigPropertiesBundle bundle = new ConfigPropertiesBundle("test");
+	InitProperties bundle = new InitProperties();
 	
 	static class MySimple {
 		
@@ -133,7 +133,7 @@ public class CustomTypesTest {
 				.addTypes(MySimpleType.class).addTypes(MyMultiType.class)
 				.setValuesSeparator('/').trimMultiValues(true);
 		
-		bundle.clearProperties().put("myConcurrentMap", "A = true,200 / B = true,300 / C = false,500");
+		bundle.clear().put("myConcurrentMap", "A = true,200 / B = true,300 / C = false,500");
 		initializer.initialize(bundle, this);
 		assertEquals(myConcurrentMap.size(),3);
 	}
@@ -142,7 +142,7 @@ public class CustomTypesTest {
 	public void testSimpleMap() {
 		
 		Initializer initializer = new Initializer().addTypes(MySimpleType.class).setValuesSeparator('/').trimMultiValues(true);
-		bundle.clearProperties().put("mySimpleMap", "A = true,200 / B = true,300 / C = false,500");
+		bundle.clear().put("mySimpleMap", "A = true,200 / B = true,300 / C = false,500");
 		initializer.initialize(bundle, this);
 		assertEquals(mySimpleMap.size(),3);
 	}
@@ -153,7 +153,7 @@ public class CustomTypesTest {
 		MySimple[] correct = new MySimple[]{new MySimple(true, 200),new MySimple(true, 300),new MySimple(false, 500)};
 		
 		Initializer initializer = new Initializer().addTypes(MySimpleType.class).setValuesSeparator('/');
-		bundle.clearProperties().put("mySimpleArray", "true,200/true,300/false,500");
+		bundle.clear().put("mySimpleArray", "true,200/true,300/false,500");
 		initializer.initialize(bundle, this);
 		assertArrayEquals(correct, mySimpleArray);
 	}
@@ -162,7 +162,7 @@ public class CustomTypesTest {
 	public void testSimpleClass() {
 		
 		Initializer initializer = new Initializer().addTypes(MySimpleType.class);
-		bundle.clearProperties().put("mySimple", "true,200");
+		bundle.clear().put("mySimple", "true,200");
 		initializer.initialize(bundle, this);
 		assertEquals("true|200", mySimple.toString());
 	}
@@ -173,7 +173,7 @@ public class CustomTypesTest {
 		MySimpleType mySimpleType = new MySimpleType();
 		
 		Initializer initializer = new Initializer().addTypes(mySimpleType);
-		bundle.clearProperties().put("mySimple", "true,200");
+		bundle.clear().put("mySimple", "true,200");
 		initializer.initialize(bundle, this);
 		assertEquals("true|200", mySimple.toString());
 	}

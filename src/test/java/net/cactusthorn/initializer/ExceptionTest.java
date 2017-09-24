@@ -16,7 +16,7 @@ import java.util.StringTokenizer;
 
 import net.cactusthorn.initializer.Initializer;
 import net.cactusthorn.initializer.InitializerException;
-import net.cactusthorn.initializer.ConfigPropertiesBundle;
+import net.cactusthorn.initializer.InitProperties;
 import net.cactusthorn.initializer.annotations.InitProperty;
 import static net.cactusthorn.initializer.InitializerException.StandardError.*;
 import static net.cactusthorn.initializer.annotations.InitPropertyPolicy.*;
@@ -26,7 +26,7 @@ import org.junit.Test;
 public class ExceptionTest {
 
 	Initializer initializer = new Initializer();
-	ConfigPropertiesBundle bundle = new ConfigPropertiesBundle("test");
+	InitProperties bundle = new InitProperties();
 	
 	@InitProperty
 	int _int;
@@ -40,7 +40,7 @@ public class ExceptionTest {
 	@Test
 	public void testUNSUPPORTED_TYPE() {
 		
-		bundle.clearProperties().put("bool", true).put("st", "do it");
+		bundle.clear().put("bool", true).put("st", "do it");
 		try {
 			initializer.initialize(bundle, this);
 			fail();
@@ -52,7 +52,7 @@ public class ExceptionTest {
 	@Test
 	public void testWRONG_VALUE() {
 		
-		bundle.clearProperties().put("_int", 66.66d).put("bool", true);
+		bundle.clear().put("_int", 66.66d).put("bool", true);
 		try {
 			initializer.initialize(bundle, this);
 			fail();
@@ -64,7 +64,7 @@ public class ExceptionTest {
 	@Test
 	public void testNOT_EMPTY_PROPERTY() {
 		
-		bundle.clearProperties().put("bool", true).put("_int", "");
+		bundle.clear().put("bool", true).put("_int", "");
 		try {
 			initializer.initialize(bundle, this);
 			fail();
@@ -76,7 +76,7 @@ public class ExceptionTest {
 	@Test
 	public void testREQUIRED_PROPERTY() {
 		
-		bundle.clearProperties().put("_int", 1);
+		bundle.clear().put("_int", 1);
 		try {
 			initializer.initialize(bundle, this);
 			fail();

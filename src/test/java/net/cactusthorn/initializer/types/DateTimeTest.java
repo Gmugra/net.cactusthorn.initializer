@@ -19,13 +19,13 @@ import org.junit.Test;
 import static net.cactusthorn.initializer.annotations.InitPropertyPolicy.OPTIONAL;
 import net.cactusthorn.initializer.Initializer;
 import net.cactusthorn.initializer.InitializerException;
-import net.cactusthorn.initializer.ConfigPropertiesBundle;
+import net.cactusthorn.initializer.InitProperties;
 import net.cactusthorn.initializer.annotations.*;
 
 public class DateTimeTest {
 	
 	Initializer initializer = new Initializer();
-	ConfigPropertiesBundle bundle = new ConfigPropertiesBundle("test");
+	InitProperties bundle = new InitProperties();
 	
 	java.util.Calendar currentCalendar = Calendar.getInstance(); 
 	java.util.Date currentUtilDate = currentCalendar.getTime();
@@ -48,7 +48,7 @@ public class DateTimeTest {
 		
 		date = null;
 		
-		bundle.clearProperties().put("date", "21.12.1976");
+		bundle.clear().put("date", "21.12.1976");
 		local.initialize(bundle, this);
 		assertNotNull(date);
 	}
@@ -58,14 +58,14 @@ public class DateTimeTest {
 		
 		date = null;
 		
-		bundle.clearProperties().put("date", "21.12.1976");
+		bundle.clear().put("date", "21.12.1976");
 		initializer.initialize(bundle, this);
 	}
 	
 	@Test
 	public void testCalendar() {
 		
-		bundle.clearProperties().put("calendar", "2017-09-17T11:16:50+01:00");
+		bundle.clear().put("calendar", "2017-09-17T11:16:50+01:00");
 		initializer.initialize(bundle, this);
 		assertNotNull(calendar);
 		
@@ -90,7 +90,7 @@ public class DateTimeTest {
 	@Test
 	public void testSqlDate() {
 		
-		bundle.clearProperties().put("sqldate", "2017-09-17T11:16:50+01:00");
+		bundle.clear().put("sqldate", "2017-09-17T11:16:50+01:00");
 		initializer.initialize(bundle, this);
 		assertNotNull(sqldate);
 		
@@ -118,7 +118,7 @@ public class DateTimeTest {
 		
 		date = null;
 		
-		bundle.clearProperties().put("date", "2017-09-17T11:16:50+01:00");
+		bundle.clear().put("date", "2017-09-17T11:16:50+01:00");
 		initializer.initialize(bundle, this);
 		assertNotNull(date);
 		

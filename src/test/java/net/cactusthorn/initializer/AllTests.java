@@ -28,7 +28,8 @@ import org.junit.runners.Suite.SuiteClasses;
 	ArraysTest.class,
 	ListSetTest.class,
 	MapTest.class,
-	CustomTypesTest.class
+	CustomTypesTest.class,
+	InitPropertiesTest.class
 })
 public class AllTests {
 }

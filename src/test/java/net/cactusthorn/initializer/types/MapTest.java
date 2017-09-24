@@ -17,7 +17,7 @@ import java.util.*;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
-import net.cactusthorn.initializer.ConfigPropertiesBundle;
+import net.cactusthorn.initializer.InitProperties;
 import net.cactusthorn.initializer.Initializer;
 import net.cactusthorn.initializer.InitializerException;
 import net.cactusthorn.initializer.annotations.*;
@@ -26,7 +26,7 @@ import static net.cactusthorn.initializer.annotations.InitPropertyPolicy.*;
 
 public class MapTest {
 	
-	ConfigPropertiesBundle bundle = new ConfigPropertiesBundle("test");
+	InitProperties bundle = new InitProperties();
 	
 	@InitPropertyName("mapA")
 	@InitProperty(OPTIONAL)
@@ -49,7 +49,7 @@ public class MapTest {
 		
 		Initializer initializer = new Initializer().setValuesSeparator('|').setPairSeparator('_').trimMultiValues(true);
 		
-		bundle.clearProperties().put("tm", " 10_2017 | 20_300 | 30_44494 ");
+		bundle.clear().put("tm", " 10_2017 | 20_300 | 30_44494 ");
 		initializer.initialize(bundle, this);
 	
 		assertEquals(tm.size(),3);
@@ -60,7 +60,7 @@ public class MapTest {
 		
 		Initializer initializer = new Initializer();
 		
-		bundle.clearProperties().put("identMap", "A=2017,B=300,C=44494994944747474747474");
+		bundle.clear().put("identMap", "A=2017,B=300,C=44494994944747474747474");
 		initializer.initialize(bundle, this);
 		assertEquals(identMap.size(),3);
 	}
@@ -71,7 +71,7 @@ public class MapTest {
 		Initializer initializer = new Initializer();
 		
 		try {
-			bundle.clearProperties().put("unsupported", "10=S");
+			bundle.clear().put("unsupported", "10=S");
 			initializer.initialize(bundle, this);
 			fail();
 		} catch (InitializerException e ) {
@@ -84,7 +84,7 @@ public class MapTest {
 		
 		Initializer initializer = new Initializer();
 		
-		bundle.clearProperties().put("intDateMap", "10=2017-10-10,20=2017-03-08,30=2017-11-15");
+		bundle.clear().put("intDateMap", "10=2017-10-10,20=2017-03-08,30=2017-11-15");
 		initializer.initialize(bundle, this);
 		//System.out.println(intDateMap);
 		assertEquals(intDateMap.size(),3);
@@ -95,7 +95,7 @@ public class MapTest {
 		
 		Initializer initializer = new Initializer();
 		
-		bundle.clearProperties().put("mapA", "a=10,b=20,c=30,AB\\=CD=5000");
+		bundle.clear().put("mapA", "a=10,b=20,c=30,AB\\=CD=5000");
 		initializer.initialize(bundle, this);
 		//System.out.println(simpleMap);
 		assertEquals(simpleMap.size(),4);

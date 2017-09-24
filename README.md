@@ -58,7 +58,7 @@ public class MyInit {
 		
 		MyClass myClass =  new MyClass();
 	
-		initializer.initialize(prop, myClass);
+		initializer.initialize(InitProperties.from(prop), myClass);
 		
 		System.out.println(myClass.toString());
 	}

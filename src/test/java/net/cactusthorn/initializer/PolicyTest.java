@@ -15,14 +15,14 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import net.cactusthorn.initializer.Initializer;
 import net.cactusthorn.initializer.InitializerException;
-import net.cactusthorn.initializer.ConfigPropertiesBundle;
+import net.cactusthorn.initializer.InitProperties;
 import net.cactusthorn.initializer.annotations.*;
 import static net.cactusthorn.initializer.annotations.InitPropertyPolicy.*;
 
 public class PolicyTest {
 
 	Initializer initializer = new Initializer();
-	ConfigPropertiesBundle bundle = new ConfigPropertiesBundle("test");
+	InitProperties bundle = new InitProperties();
 	
 	@InitProperty(OPTIONAL)
 	boolean optional = true;
@@ -40,7 +40,7 @@ public class PolicyTest {
 	public void testOptional() throws InitializerException {
 		
 		bundle
-			.clearProperties()
+			.clear()
 			.put("required", true)
 			.put("requiredNotEmpty", true);
 		
@@ -54,7 +54,7 @@ public class PolicyTest {
 	public void testRequired() throws InitializerException {
 		
 		bundle
-			.clearProperties()
+			.clear()
 			.put("requiredNotEmpty", true);
 	
 		initializer.initialize(bundle, this);
@@ -64,7 +64,7 @@ public class PolicyTest {
 	public void testNotEmpty() throws InitializerException {
 		
 		bundle
-			.clearProperties()
+			.clear()
 			.put("required", true)
 			.put("notEmpty", null)
 			.put("requiredNotEmpty", true);
@@ -76,7 +76,7 @@ public class PolicyTest {
 	public void testRequiredNotEmpty() throws InitializerException {
 		
 		bundle
-			.clearProperties()
+			.clear()
 			.put("required", true)
 			.put("requiredNotEmpty", "");
 		

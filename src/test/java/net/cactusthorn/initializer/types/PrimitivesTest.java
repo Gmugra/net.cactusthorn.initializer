@@ -16,13 +16,13 @@ import static org.junit.Assert.*;
 import static net.cactusthorn.initializer.annotations.InitPropertyPolicy.OPTIONAL;
 import net.cactusthorn.initializer.Initializer;
 import net.cactusthorn.initializer.InitializerException;
-import net.cactusthorn.initializer.ConfigPropertiesBundle;
+import net.cactusthorn.initializer.InitProperties;
 import net.cactusthorn.initializer.annotations.InitProperty;
 
 public class PrimitivesTest {
 
 	Initializer initializer = new Initializer();
-	ConfigPropertiesBundle bundle = new ConfigPropertiesBundle("test");
+	InitProperties bundle = new InitProperties();
 	
 	@InitProperty(OPTIONAL)
 	boolean bool;
@@ -52,7 +52,7 @@ public class PrimitivesTest {
 	public void testDoubleException() {
 		
 		bundle
-			.clearProperties()
+			.clear()
 			.put("_float", "xx");
 		
 		initializer.initialize(bundle, this);
@@ -61,7 +61,7 @@ public class PrimitivesTest {
 	@Test
 	public void testDouble() {
 		
-		bundle.clearProperties();
+		bundle.clear();
 		initializer.initialize(bundle, this);
 		assertEquals(_double, -200.43d, 0.0001);
 		
@@ -84,7 +84,7 @@ public class PrimitivesTest {
 	public void testFloatException() {
 		
 		bundle
-			.clearProperties()
+			.clear()
 			.put("_float", "qbc");
 		
 		initializer.initialize(bundle, this);
@@ -93,7 +93,7 @@ public class PrimitivesTest {
 	@Test
 	public void testFloat() {
 		
-		bundle.clearProperties();
+		bundle.clear();
 		initializer.initialize(bundle, this);
 		assertEquals(_float, -100.99f, 0.0001);
 		
@@ -116,7 +116,7 @@ public class PrimitivesTest {
 	public void testShortException() {
 		
 		bundle
-			.clearProperties()
+			.clear()
 			.put("_short", -35000);
 		
 		initializer.initialize(bundle, this);
@@ -125,7 +125,7 @@ public class PrimitivesTest {
 	@Test
 	public void testShort() {
 		
-		bundle.clearProperties();
+		bundle.clear();
 		initializer.initialize(bundle, this);
 		assertEquals(_short, (short)50);
 		
@@ -148,7 +148,7 @@ public class PrimitivesTest {
 	public void testLongException() {
 		
 		bundle
-			.clearProperties()
+			.clear()
 			.put("_long", "true");
 		
 		initializer.initialize(bundle, this);
@@ -157,7 +157,7 @@ public class PrimitivesTest {
 	@Test
 	public void testLong() {
 		
-		bundle.clearProperties();
+		bundle.clear();
 		initializer.initialize(bundle, this);
 		assertEquals(_long, 40L);
 		
@@ -180,7 +180,7 @@ public class PrimitivesTest {
 	public void testByteException() {
 		
 		bundle
-			.clearProperties()
+			.clear()
 			.put("_byte", 200);
 		
 		initializer.initialize(bundle, this);
@@ -189,7 +189,7 @@ public class PrimitivesTest {
 	@Test
 	public void testByte() {
 		
-		bundle.clearProperties();
+		bundle.clear();
 		initializer.initialize(bundle, this);
 		assertEquals(_byte, (byte)30);
 		
@@ -212,7 +212,7 @@ public class PrimitivesTest {
 	public void testIntException() {
 		
 		bundle
-			.clearProperties()
+			.clear()
 			.put("integer", "abc");
 		
 		initializer.initialize(bundle, this);
@@ -221,7 +221,7 @@ public class PrimitivesTest {
 	@Test
 	public void testInt() {
 		
-		bundle.clearProperties();
+		bundle.clear();
 		initializer.initialize(bundle, this);
 		assertEquals(integer, 10);
 		
@@ -243,7 +243,7 @@ public class PrimitivesTest {
 	@Test
 	public void testBoolean() {
 		
-		bundle.clearProperties();
+		bundle.clear();
 		initializer.initialize(bundle, this);
 		assertEquals(bool, false);
 		
@@ -271,7 +271,7 @@ public class PrimitivesTest {
 	@Test
 	public void testChar() {
 		
-		bundle.clearProperties();
+		bundle.clear();
 		initializer.initialize(bundle, this);
 		assertEquals(_char, 'A');
 		

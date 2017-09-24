@@ -16,13 +16,13 @@ import org.junit.Test;
 
 import net.cactusthorn.initializer.Initializer;
 import net.cactusthorn.initializer.InitializerException;
-import net.cactusthorn.initializer.ConfigPropertiesBundle;
+import net.cactusthorn.initializer.InitProperties;
 import net.cactusthorn.initializer.annotations.*;
 
 public class NameTest {
 	
 	Initializer initializer = new Initializer();
-	ConfigPropertiesBundle bundle = new ConfigPropertiesBundle("test");
+	InitProperties bundle = new InitProperties();
 	
 	@InitPropertyName("BOOL")
 	boolean bool;
@@ -38,7 +38,7 @@ public class NameTest {
 	public void testNameWithPolicy() throws InitializerException {
 		
 		bundle
-			.clearProperties()
+			.clear()
 			.put("boolWithPolicy", true);
 		
 		initializer.initialize(bundle, this);
@@ -48,7 +48,7 @@ public class NameTest {
 	public void testName() throws InitializerException {
 		
 		bundle
-			.clearProperties()
+			.clear()
 			.put("BOOL", true)
 			.put("BOOL2", true)
 			.put("boolNoName", true);
@@ -63,7 +63,7 @@ public class NameTest {
 	public void testNoName() throws InitializerException {
 		
 		bundle
-			.clearProperties()
+			.clear()
 			.put("BOOL2", true);
 		
 		initializer.initialize(bundle, this);
