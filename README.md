@@ -47,7 +47,8 @@ import net.cactusthorn.initializer.Initializer;
 
 public class MyInit {
 	
-	private static final Initializer initializer = new Initializer().setValuesSeparator(',').trimMultiValues(true);
+	private static final Initializer initializer = 
+		new Initializer().setValuesSeparator(',').trimMultiValues(true);
 	
 	public static void main(String... args) {
 		
