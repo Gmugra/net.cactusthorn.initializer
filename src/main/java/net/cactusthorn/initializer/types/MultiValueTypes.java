@@ -135,7 +135,7 @@ public abstract class MultiValueTypes implements ITypes {
 				}
 			}
 		}
-		if (!"".equals(currentKey) ) {
+		if (!"".equals(currentKey) && currentKey != null  ) {
 			arr.add(StringsPair.of(currentKey, deleteEscapingCommaEquals(str.substring(pos ) ) ) );
 		}
 	    return arr;

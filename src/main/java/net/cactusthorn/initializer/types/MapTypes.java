@@ -111,7 +111,7 @@ public class MapTypes extends MultiValueTypes {
 		}
 		
 		//Empty value = empty map
-		if (pairs.size() == 1 && pairs.get(0).key() == null ) {
+		if (pairs.size() == 0 ) {
 			return Value.of(newMap);
 		}
 		
