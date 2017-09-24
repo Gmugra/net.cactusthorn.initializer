@@ -110,6 +110,11 @@ public class MapTypes extends MultiValueTypes {
 			throw new InitializerException(info, e);
 		}
 		
+		//Empty value = empty map
+		if (pairs.size() == 1 && pairs.get(0).key() == null ) {
+			return Value.of(newMap);
+		}
+		
 		TypeValue keyTypeValue = findType(info, pairs.get(0).key(), keyClass, availableTypes);
 		if (keyTypeValue == null) {
 			return Value.empty();

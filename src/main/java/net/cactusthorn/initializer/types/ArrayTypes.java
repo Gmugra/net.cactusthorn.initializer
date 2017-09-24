@@ -40,6 +40,11 @@ public class ArrayTypes extends MultiValueTypes {
 		
 		List<String> valueParts = split(propertyValue);
 		
+		//Empty value = 0 size array
+		if (valueParts.size() == 1 && valueParts.get(0).isEmpty() ) {
+			return Value.of(Array.newInstance(arrayType, 0 ) );
+		}
+		
 		TypeValue typeValue = findType(info, valueParts.get(0), arrayType, availableTypes);
 		if (typeValue == null) {
 			return Value.empty();

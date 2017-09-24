@@ -15,10 +15,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import org.junit.Test;
-
 import static org.junit.Assert.*;
+
 import static net.cactusthorn.initializer.InitializerException.StandardError.*;
-import static net.cactusthorn.initializer.annotations.InitPropertyPolicy.OPTIONAL;
+import static net.cactusthorn.initializer.annotations.InitPropertyPolicy.*;
 import net.cactusthorn.initializer.Initializer;
 import net.cactusthorn.initializer.InitializerException;
 import net.cactusthorn.initializer.InitProperties;
@@ -31,21 +31,54 @@ public class ArraysTest {
 	
 	InitProperties bundle = new InitProperties();
 
-	@InitProperty(OPTIONAL)
+	@InitProperty
 	String[] sarr;
 	
 	@InitProperty(OPTIONAL)
 	int[] iarr;
 	
-	@InitProperty(OPTIONAL)
+	@InitProperty
 	BigInteger[] biarr;
 	
-	@InitProperty(OPTIONAL)
+	@InitProperty
 	java.util.Date[] datearr;
 	
 	@InitPropertyName("FlOaT")
-	@InitProperty
 	float[] floatarr;
+	
+	@InitProperty(OPTIONAL)
+	StringBuilder[] builder;
+
+	@Test
+	public void testEmptyAllowedInt() {
+		
+		bundle.clear().put("iarr", "");
+		new Initializer().initialize(bundle, this);
+		assertEquals(0, iarr.length);
+	}
+	
+	@Test
+	public void testStringBuilder() {
+		
+		bundle.clear().put("builder", " "); //space, yes
+		new Initializer().initialize(bundle, this);
+		assertEquals(1, builder.length);
+	}
+	
+	@Test
+	public void testEmptyNotAllowed() {
+		
+		Initializer initializer = new Initializer();
+		
+		bundle.clear().put("biarr", "");
+		
+		try {
+			initializer.initialize(bundle, this);
+			fail();
+		} catch (InitializerException e) {
+			assertEquals(NOT_EMPTY_PROPERTY, e.getStandardError());
+		}	
+	}
 	
 	@Test
 	public void testFloatArray() {

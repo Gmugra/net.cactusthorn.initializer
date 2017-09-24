@@ -84,7 +84,7 @@ public class ListSetTypes extends MultiValueTypes {
 		
 		Type[] genericTypes = parameterizedType.getActualTypeArguments();
 		if (genericTypes.length != 1) {
-			Value.empty();
+			return Value.empty();
 		}
 		
 		Constructor<? extends Collection<Object>> constructor = getConstructor(fieldType);
@@ -99,6 +99,11 @@ public class ListSetTypes extends MultiValueTypes {
 		
 		List<String> valueParts = split(propertyValue);
 		
+		TypeValue typeValue = findType(info, valueParts.get(0), collectionClass, availableTypes);
+		if (typeValue == null) {
+			return Value.empty();
+		}
+		
 		Collection<Object> newCollection = null;
 		try {
 			newCollection = constructor.newInstance();
@@ -106,9 +111,9 @@ public class ListSetTypes extends MultiValueTypes {
 			throw new InitializerException(info, e);
 		}
 		
-		TypeValue typeValue = findType(info, valueParts.get(0), collectionClass, availableTypes);
-		if (typeValue == null) {
-			return Value.empty();
+		//Empty value = empty collection
+		if (valueParts.size() == 1 && valueParts.get(0).isEmpty() ) {
+			return Value.of(newCollection);
 		}
 		
 		newCollection.add(typeValue.value.get() );

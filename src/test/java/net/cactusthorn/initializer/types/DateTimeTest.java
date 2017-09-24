@@ -46,8 +46,6 @@ public class DateTimeTest {
 		Initializer local = 
 			new Initializer().addDateTimeFormatPattern("dd.MM.yyyy");
 		
-		date = null;
-		
 		bundle.clear().put("date", "21.12.1976");
 		local.initialize(bundle, this);
 		assertNotNull(date);
@@ -55,8 +53,6 @@ public class DateTimeTest {
 	
 	@Test(expected = InitializerException.class)
 	public void testUtilDateException() {
-		
-		date = null;
 		
 		bundle.clear().put("date", "21.12.1976");
 		initializer.initialize(bundle, this);
@@ -115,8 +111,6 @@ public class DateTimeTest {
 
 	@Test
 	public void testUtilDate() {
-		
-		date = null;
 		
 		bundle.clear().put("date", "2017-09-17T11:16:50+01:00");
 		initializer.initialize(bundle, this);
