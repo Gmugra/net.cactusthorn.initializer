@@ -13,25 +13,20 @@ package net.cactusthorn.initializer;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import static net.cactusthorn.initializer.InitializerException.StandardError.WRONG_VALUE;
-
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Type;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-import net.cactusthorn.initializer.InitProperties;
-import net.cactusthorn.initializer.Initializer;
-import net.cactusthorn.initializer.InitializerException;
-import net.cactusthorn.initializer.annotations.Info;
-import net.cactusthorn.initializer.annotations.InitProperty;
-import net.cactusthorn.initializer.types.ITypes;
-import net.cactusthorn.initializer.types.MapTypes;
-import net.cactusthorn.initializer.types.Value;
+import net.cactusthorn.initializer.annotations.*;
+import net.cactusthorn.initializer.types.*;
+import static net.cactusthorn.initializer.InitializerException.StandardError.WRONG_VALUE;
 
 public class CustomTypesTest {
-	
-	InitProperties bundle = new InitProperties();
 	
 	static class MySimple {
 		
@@ -43,10 +38,7 @@ public class CustomTypesTest {
 			this.$int = $int;
 		}
 
-		@Override
-		public String toString() {
-			return bool + "|" + $int;
-		}
+		@Override public String toString() { return bool + "|" + $int; }
 
 		@Override
 		public boolean equals(Object obj) {
@@ -57,10 +49,7 @@ public class CustomTypesTest {
 			return false;
 		}
 
-		@Override
-		public int hashCode() {
-			return $int;
-		}
+		@Override public int hashCode() { return $int; }
 	}
 	
 	static class MySimpleType implements ITypes {
@@ -126,6 +115,27 @@ public class CustomTypesTest {
 	@InitProperty
 	ConcurrentHashMap<String,MySimple> myConcurrentMap;
 
+	
+	@Test
+	public void testAll() throws URISyntaxException, IOException {
+		
+		MySimple[] correctArray = new MySimple[]{new MySimple(true, 200),new MySimple(true, 300),new MySimple(false, 700)};
+		
+		Path path = Paths.get(getClass().getClassLoader().getResource("init-custom.properties").toURI());
+		
+		new Initializer()
+			.addTypes(MySimpleType.class)
+			.addTypes(MyMultiType.class)
+			.setValuesSeparator('/')
+			.trimMultiValues(true)
+			.initialize(InitProperties.load(path), this);
+		
+		assertEquals(3, myConcurrentMap.size());
+		assertEquals(3, mySimpleMap.size());
+		assertArrayEquals(correctArray, mySimpleArray);
+		assertEquals("true|1000", mySimple.toString());
+	}
+	
 	@Test
 	public void testConcurrentMap() {
 		
@@ -133,18 +143,18 @@ public class CustomTypesTest {
 				.addTypes(MySimpleType.class).addTypes(MyMultiType.class)
 				.setValuesSeparator('/').trimMultiValues(true);
 		
-		bundle.clear().put("myConcurrentMap", "A = true,200 / B = true,300 / C = false,500");
-		initializer.initialize(bundle, this);
-		assertEquals(myConcurrentMap.size(),3);
+		InitProperties props = new InitProperties().put("myConcurrentMap", "A = true,200 / B = true,300 / C = false,500");
+		initializer.initialize(props, this);
+		assertEquals(3, myConcurrentMap.size());
 	}
 	
 	@Test
 	public void testSimpleMap() {
 		
 		Initializer initializer = new Initializer().addTypes(MySimpleType.class).setValuesSeparator('/').trimMultiValues(true);
-		bundle.clear().put("mySimpleMap", "A = true,200 / B = true,300 / C = false,500");
-		initializer.initialize(bundle, this);
-		assertEquals(mySimpleMap.size(),3);
+		InitProperties props = new InitProperties().put("mySimpleMap", "A = true,200 / B = true,300 / C = false,500");
+		initializer.initialize(props, this);
+		assertEquals(3, mySimpleMap.size());
 	}
 	
 	@Test
@@ -153,8 +163,8 @@ public class CustomTypesTest {
 		MySimple[] correct = new MySimple[]{new MySimple(true, 200),new MySimple(true, 300),new MySimple(false, 500)};
 		
 		Initializer initializer = new Initializer().addTypes(MySimpleType.class).setValuesSeparator('/');
-		bundle.clear().put("mySimpleArray", "true,200/true,300/false,500");
-		initializer.initialize(bundle, this);
+		InitProperties props = new InitProperties().put("mySimpleArray", "true,200/true,300/false,500");
+		initializer.initialize(props, this);
 		assertArrayEquals(correct, mySimpleArray);
 	}
 	
@@ -162,8 +172,8 @@ public class CustomTypesTest {
 	public void testSimpleClass() {
 		
 		Initializer initializer = new Initializer().addTypes(MySimpleType.class);
-		bundle.clear().put("mySimple", "true,200");
-		initializer.initialize(bundle, this);
+		InitProperties props = new InitProperties().put("mySimple", "true,200");
+		initializer.initialize(props, this);
 		assertEquals("true|200", mySimple.toString());
 	}
 	
@@ -173,8 +183,8 @@ public class CustomTypesTest {
 		MySimpleType mySimpleType = new MySimpleType();
 		
 		Initializer initializer = new Initializer().addTypes(mySimpleType);
-		bundle.clear().put("mySimple", "true,200");
-		initializer.initialize(bundle, this);
+		InitProperties props = new InitProperties().put("mySimple", "true,200");
+		initializer.initialize(props, this);
 		assertEquals("true|200", mySimple.toString());
 	}
 }

@@ -112,6 +112,143 @@ public class BeanTest {
 	}
 }
 ```
+## Custom types example
+Properties:
+```
+myConcurrentMap = A = true,200 / B = true,300 / C = false,500
+mySimpleMap = C = true,200 / D = true,300 / F = false,500
+mySimpleArray = true,200/true,300/false,700
+mySimple = true,1000
+```
+Test:
+```java
+import org.junit.Test;
+import static org.junit.Assert.*;
+
+import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Type;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+
+import net.cactusthorn.initializer.annotations.*;
+import net.cactusthorn.initializer.types.*;
+import static net.cactusthorn.initializer.InitializerException.StandardError.WRONG_VALUE;
+
+public class CustomTypesTest {
+	
+	static class MySimple {
+		
+		boolean bool;
+		int $int;
+		
+		public MySimple(boolean bool, int $int) {
+			this.bool = bool;
+			this.$int = $int;
+		}
+
+		@Override public String toString() { return bool + "|" + $int; }
+
+		@Override
+		public boolean equals(Object obj) {
+			if (obj instanceof MySimple) {
+				MySimple that = (MySimple)obj;
+				return bool == that.bool && $int == that.$int;
+			}
+			return false;
+		}
+
+		@Override public int hashCode() { return $int; }
+	}
+	
+	static class MySimpleType implements ITypes {
+		
+		@Override
+		public MySimpleType clone() throws CloneNotSupportedException {
+			return (MySimpleType)super.clone();
+		}
+
+		@Override
+		public Value<?> createObject(Class<?> fieldType, Type fieldGenericType, Info info, String propertyValue, List<ITypes> availableTypes) 
+				throws InitializerException {
+			
+			boolean empty = propertyValue.isEmpty();
+			
+			if (MySimple.class.equals(fieldType) ) {
+				
+				if(empty) {
+					return Value._null();
+				}
+				
+				String[] parts = propertyValue.split(",");
+				
+				try {
+					return Value.of(new MySimple(Boolean.valueOf(parts[0] ), Integer.valueOf(parts[1] ) ) );
+				} catch (Exception e) {
+					throw new InitializerException(info, WRONG_VALUE, e);
+				}
+			} 
+			
+			return Value.empty();			
+		}
+	}
+	
+	static class MyMultiType extends MapTypes {
+		
+		@SuppressWarnings("unchecked")
+		@Override
+		protected Constructor<? extends Map<Object,Object>> getConstructor(Class<?> fieldType) {
+			
+			if (!ConcurrentHashMap.class.isAssignableFrom(fieldType) ) {
+				return null;
+			} 
+			
+			try {
+				return (Constructor<? extends Map<Object,Object>>)ConcurrentHashMap.class.getConstructor();
+			} catch (NoSuchMethodException|SecurityException e) {
+				return null;
+			}
+		}
+		
+	}
+	
+	@InitProperty
+	MySimple mySimple;
+	
+	@InitProperty
+	MySimple[] mySimpleArray;
+	
+	@InitProperty
+	SortedMap<String,MySimple> mySimpleMap;
+	
+	@InitProperty
+	ConcurrentHashMap<String,MySimple> myConcurrentMap;
+
+	
+	@Test
+	public void testAll() throws URISyntaxException, IOException {
+		
+		MySimple[] correctArray = new MySimple[]{new MySimple(true, 200),new MySimple(true, 300),new MySimple(false, 700)};
+		
+		Path path = Paths.get(getClass().getClassLoader().getResource("init-custom.properties").toURI());
+		
+		new Initializer()
+			.addTypes(MySimpleType.class)
+			.addTypes(MyMultiType.class)
+			.setValuesSeparator('/')
+			.trimMultiValues(true)
+			.initialize(InitProperties.load(path), this);
+		
+		assertEquals(3, myConcurrentMap.size());
+		assertEquals(3, mySimpleMap.size());
+		assertArrayEquals(correctArray, mySimpleArray);
+		assertEquals("true|1000", mySimple.toString());
+	}
+}
+```
 
 ## What it can initialize for the moment?
 1. all primitive and simple object types, StringBuffer, StringBuilder, BigDecimal, BigInteger, java.util.Date, java.sql.Date, java.util.Calendar  
