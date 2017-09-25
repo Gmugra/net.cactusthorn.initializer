@@ -172,8 +172,8 @@ public class CustomTypesTest {
 		}
 
 		@Override
-		public Value<?> createObject(Class<?> fieldType, Type fieldGenericType, Info info, String propertyValue, List<ITypes> availableTypes) 
-				throws InitializerException {
+		public Value<?> createObject(Class<?> fieldType, Type fieldGenericType, Info info, 
+			String propertyValue, List<ITypes> availableTypes) throws InitializerException {
 			
 			boolean empty = propertyValue.isEmpty();
 			
@@ -186,7 +186,9 @@ public class CustomTypesTest {
 				String[] parts = propertyValue.split(",");
 				
 				try {
-					return Value.of(new MySimple(Boolean.valueOf(parts[0] ), Integer.valueOf(parts[1] ) ) );
+					return Value.of(
+						new MySimple(
+								Boolean.valueOf(parts[0] ), Integer.valueOf(parts[1] ) ) );
 				} catch (Exception e) {
 					throw new InitializerException(info, WRONG_VALUE, e);
 				}
@@ -207,7 +209,9 @@ public class CustomTypesTest {
 			} 
 			
 			try {
-				return (Constructor<? extends Map<Object,Object>>)ConcurrentHashMap.class.getConstructor();
+				return 
+					(Constructor<? extends Map<Object,Object>>)
+						ConcurrentHashMap.class.getConstructor();
 			} catch (NoSuchMethodException|SecurityException e) {
 				return null;
 			}
@@ -231,7 +235,12 @@ public class CustomTypesTest {
 	@Test
 	public void testAll() throws URISyntaxException, IOException {
 		
-		MySimple[] correctArray = new MySimple[]{new MySimple(true, 200),new MySimple(true, 300),new MySimple(false, 700)};
+		MySimple[] correctArray = 
+			new MySimple[]{
+					new MySimple(true, 200),
+					new MySimple(true, 300),
+					new MySimple(false, 700)
+			};
 		
 		Path path = Paths.get(getClass().getClassLoader().getResource("init-custom.properties").toURI());
 		
