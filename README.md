@@ -273,7 +273,7 @@ public class CustomTypesTest {
 * Check unit tests - a lot of examples there
 
 ## What it can NOT initialize
-* fields based on not static inner classes
+* globally : attributes based on **not static** inner classes
 
 ## License
 Initializer is released under the BSD 2-Clause License
