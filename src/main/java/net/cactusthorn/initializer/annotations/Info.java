@@ -24,6 +24,7 @@ public final class Info {
 	private Field field;
 	private InitPropertyPolicy policy = InitPropertyPolicy.NOT_EMPTY;
 	private String name;
+	private boolean isEnvVariable;
 	
 	private Info(String configBundleName, Class<?> clazz, Field field) {
 		
@@ -42,12 +43,20 @@ public final class Info {
 			Class<? extends Annotation> annotatedType = annotation.annotationType();
 			
 			try {
+				
 				if (InitPropertyName.class.equals(annotatedType ) ) {
 					
 					if (info == null ) {info = new Info(configBundleName, clazz, field);}
 					
 					Method method = annotatedType.getDeclaredMethod("value");
 					info.name = (String)method.invoke(annotation);
+				} else if (InitEnvVariable.class.equals(annotatedType ) ) {
+					
+					if (info == null ) {info = new Info(configBundleName, clazz, field);}
+					
+					Method method = annotatedType.getDeclaredMethod("value");
+					info.name = (String)method.invoke(annotation);
+					info.isEnvVariable = true;
 				}
 				
 				if (InitProperty.class.equals(annotatedType ) ) {
@@ -84,9 +93,17 @@ public final class Info {
 	public String getConfigBundleName() {
 		return configBundleName;
 	}
+	
+	public boolean isEnvVariable() {
+		return isEnvVariable;
+	}
 
 	@Override
 	public String toString() {
-		return "name="+name+", policy="+policy + ", field=" + field.getName() + ", class=" + clazz.getName();
+		return "name=" + name
+				+ ", policy=" + policy
+				+ ", field=" + field.getName()
+				+ ", class=" + clazz.getName()
+				+ ", isEnvVariable=" + isEnvVariable;
 	}
 }

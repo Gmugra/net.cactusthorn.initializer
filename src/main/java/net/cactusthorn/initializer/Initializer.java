@@ -170,29 +170,31 @@ public final class Initializer {
 		
 	}
 	
-	private String getPropertyValue(Info info, InitProperties configBundle) {
+	private String checkValue(Info info, boolean exists, String value) {
 		
 		InitPropertyPolicy policy = info.getPolicy();
 		
-		if (!configBundle.contains(info.getName()) ) {
-			
-			if (policy == REQUIRED || policy == REQUIRED_NOT_EMPTY ) {
-				throw new InitializerException(info, StandardError.REQUIRED_PROPERTY);
-			}
-			
+		String resultValue = value == null ? "" : value;
+		
+		if (!exists && (policy == REQUIRED || policy == REQUIRED_NOT_EMPTY ) ){
+			throw new InitializerException(info, StandardError.REQUIRED_PROPERTY);
+		} else if (!exists ) {
 			return null;
-		}
-		
-		//Note: Normally, configuration data loaded from file(s), so "null" value is not usual case.
-		String value = configBundle.get(info.getName());
-		if (value == null) {value = "";}
-		
-		if (value.isEmpty() && (policy == NOT_EMPTY || policy == REQUIRED_NOT_EMPTY ) ) {
-			
+		} else if (resultValue.isEmpty() && (policy == NOT_EMPTY || policy == REQUIRED_NOT_EMPTY ) ) {
 			throw new InitializerException(info, StandardError.NOT_EMPTY_PROPERTY);
+		} 
+		return resultValue;
+	}
+	
+	private String getPropertyValue(Info info, InitProperties initProperties) {
+		
+		if (info.isEnvVariable() ) {
+			
+			String env = System.getenv(info.getName() );
+			return checkValue(info, env != null, env);
 		}
 		
-		return value;
+		return checkValue(info, initProperties.contains(info.getName()), initProperties.get(info.getName()) );
 	}
 
 }

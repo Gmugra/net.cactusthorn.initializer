@@ -10,27 +10,20 @@
  ******************************************************************************/
 package net.cactusthorn.initializer;
 
-import net.cactusthorn.initializer.types.*;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import net.cactusthorn.initializer.annotations.InitEnvVariable;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-	NameTest.class,
-	PolicyTest.class,
-	ExceptionTest.class,
-	SplitTest.class,
-	PrimitivesTest.class,
-	SimplesTest.class,
-	DateTimeTest.class,
-	ArraysTest.class,
-	ListSetTest.class,
-	MapTest.class,
-	CustomTypesTest.class,
-	InitPropertiesTest.class,
-	EnvVariableTest.class
-})
-public class AllTests {
+public class EnvVariableTest {
+
+	@InitEnvVariable("JAVA_HOME")
+	String javaHome;
+	
+	@Test
+	public void testJavaHome() throws InitializerException {
+		
+		new Initializer().initialize(new InitProperties(), this);
+		assertNotNull(javaHome);
+	}
 }
