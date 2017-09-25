@@ -20,6 +20,7 @@ import java.nio.file.Paths;
 import java.util.Map;
 
 import net.cactusthorn.initializer.annotations.*;
+import static net.cactusthorn.initializer.annotations.InitPropertyPolicy.*;
 
 public class BeanTest {
 
@@ -31,14 +32,12 @@ public class BeanTest {
 	static class TestBean {
 		@InitProperty java.util.Date date;
 		@InitProperty Map<String, Integer> map;
-		@InitBean("sub-test-bean") SubTestBean subTestBean;
+		@InitBean("sub-test-bean") @InitProperty(REQUIRED) SubTestBean subTestBean;
 	}
 	
-	@InitBean("test-bean")
-	TestBean testBean;
+	@InitBean("test-bean") @InitProperty(REQUIRED) TestBean testBean;
 	
-	@InitProperty
-	String simple;
+	@InitProperty String simple;
 	
 	@Test
 	public void testBean() throws URISyntaxException, IOException {
