@@ -46,14 +46,13 @@ public interface ITypes extends Cloneable {
 		
 		boolean accessible = field.isAccessible();
 		field.setAccessible(true);
-		
 		try {
 			field.set(object, newValue.get());
+			field.setAccessible(accessible);
 		} catch (IllegalArgumentException|IllegalAccessException e) {
+			field.setAccessible(accessible);
 			throw new InitializerException(info, e);
 		}
-		
-		field.setAccessible(accessible);
 		
 		return true;
 	}

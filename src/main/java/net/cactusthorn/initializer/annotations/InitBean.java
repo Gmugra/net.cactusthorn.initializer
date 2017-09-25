@@ -8,22 +8,15 @@
  * 
  * http://opensource.org/licenses/BSD-2-Clause
  ******************************************************************************/
-package net.cactusthorn.initializer;
+package net.cactusthorn.initializer.annotations;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import net.cactusthorn.initializer.annotations.InitEnvVariable;
-
-public class EnvVariableTest {
-
-	@InitEnvVariable("JAVA_HOME")
-	String javaHome;
-	
-	@Test
-	public void testJavaHome() {
-		
-		new Initializer().initialize(new InitProperties(), this);
-		assertNotNull(javaHome);
-	}
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.FIELD)
+public @interface InitBean {
+	String value();
 }

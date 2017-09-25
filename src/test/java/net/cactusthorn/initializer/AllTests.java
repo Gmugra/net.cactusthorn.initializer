@@ -30,7 +30,8 @@ import org.junit.runners.Suite.SuiteClasses;
 	MapTest.class,
 	CustomTypesTest.class,
 	InitPropertiesTest.class,
-	EnvVariableTest.class
+	EnvVariableTest.class,
+	BeanTest.class
 })
 public class AllTests {
 }

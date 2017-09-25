@@ -46,21 +46,30 @@ public final class Initializer {
 		String name = types.getName();
 		if (!this.types.containsKey(name) ) {
 		
+			Constructor<? extends ITypes> constructor = null;
 			try {
-				
-				Constructor<? extends ITypes> constructor = types.getDeclaredConstructor();
-				boolean isAccessible = constructor.isAccessible();
-				constructor.setAccessible(true);
-				ITypes t = constructor.newInstance();
-				constructor.setAccessible(isAccessible);
-				
-				additionalDateTimeFormatPatterns.forEach(p -> t.addDateTimeFormatPattern(p));
-				t.setValuesSeparator(valuesSep).setPairSeparator(pairSep).trimMultiValues(trimMultiValues);
-				this.types.put(name, t);
-			} catch (NoSuchMethodException|InvocationTargetException|IllegalAccessException|InstantiationException e) {
-				e.printStackTrace();
+				constructor = types.getDeclaredConstructor();
+			} catch (NoSuchMethodException|SecurityException e) {
 				throw new InitializerException(null, e);
 			}
+			
+			ITypes $types = null;
+			boolean isAccessible = constructor.isAccessible();
+			constructor.setAccessible(true);
+			try {
+				$types = constructor.newInstance();
+				constructor.setAccessible(isAccessible);
+			} catch (InvocationTargetException|IllegalAccessException|InstantiationException e) {
+				constructor.setAccessible(isAccessible);
+				throw new InitializerException(null, e);
+			}
+			
+			for (String pattern : additionalDateTimeFormatPatterns) {
+				$types.addDateTimeFormatPattern(pattern);
+			}
+			$types.setValuesSeparator(valuesSep).setPairSeparator(pairSep).trimMultiValues(trimMultiValues);
+			
+			this.types.put(name, $types);
 		}
 		return this;
 	}
@@ -138,27 +147,44 @@ public final class Initializer {
 		return clonedTypes;
 	}
 	
-	private void initialize(List<ITypes> availableTypes, InitProperties configBundle, Object object) {
+	private void initialize(List<ITypes> availableTypes, InitProperties initProperties, Object object) {
 		
 		Class<?> clazz = object.getClass();
 		
 		for (Field field : clazz.getDeclaredFields() ) {
 			
-			Info info = Info.build(configBundle.getName(), clazz, field);
+			Info info = Info.build(initProperties.getName(), clazz, field);
 				
 			if (info == null) {
 				
 				//not annotated field
+				continue;
+			}
+	
+			if (info.isBean() ) {
 				
+				InitPropertyPolicy policy = info.getPolicy();
+				boolean contains = initProperties.containsBeanInitProperties(info.getName() );
+				if (!contains && (policy == REQUIRED || policy == REQUIRED_NOT_EMPTY ) ){
+					
+					throw new InitializerException(info, StandardError.REQUIRED_PROPERTY);
+				} else if (!contains ) {
+					
+					setBean(info, field, object, null);					
+					continue;
+				}
+				
+				Object bean = createBean(info,field);
+				initialize(availableTypes, initProperties.getBeanInitProperties(info.getName() ), bean); 
+				setBean(info, field, object, bean);		
 				continue;
 			}
 			
-			String propertyValue = getPropertyValue(info, configBundle);
+			String propertyValue = getPropertyValue(info, initProperties);
 			
 			if(propertyValue == null ) {
 				
 				//Property for the field is not present and it is permissible by policy, so -> do nothing
-				
 				continue;
 			}
 			
@@ -168,6 +194,42 @@ public final class Initializer {
 			}
 		}
 		
+	}
+	
+	private Object createBean(Info info, Field field) {
+		
+		Constructor<?> beanConstructor = null;
+		try {
+			beanConstructor = (Constructor<?>)field.getType().getDeclaredConstructor();
+		} catch (NoSuchMethodException|SecurityException e) {
+			throw new InitializerException(info, e);
+		}
+		
+		Object bean = null;
+		boolean isAccessible = beanConstructor.isAccessible();
+		beanConstructor.setAccessible(true);
+		try {
+			bean = beanConstructor.newInstance();
+			beanConstructor.setAccessible(isAccessible);
+		} catch (InvocationTargetException|IllegalAccessException|InstantiationException e) {
+			beanConstructor.setAccessible(isAccessible);
+			throw new InitializerException(info, e);
+		}
+		
+		return bean;
+	}
+	
+	private void setBean(Info info, Field field, Object mainObject, Object bean ) {
+		
+		boolean accessible = field.isAccessible();
+		field.setAccessible(true);
+		try {
+			field.set(mainObject, bean);
+			field.setAccessible(accessible);
+		} catch (IllegalArgumentException|IllegalAccessException e) {
+			field.setAccessible(accessible);
+			throw new InitializerException(info, e);
+		}
 	}
 	
 	private String checkValue(Info info, boolean exists, String value) {

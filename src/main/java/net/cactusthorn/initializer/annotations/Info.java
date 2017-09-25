@@ -25,6 +25,7 @@ public final class Info {
 	private InitPropertyPolicy policy = InitPropertyPolicy.NOT_EMPTY;
 	private String name;
 	private boolean isEnvVariable;
+	private boolean isBean;
 	
 	private Info(String configBundleName, Class<?> clazz, Field field) {
 		
@@ -50,6 +51,13 @@ public final class Info {
 					
 					Method method = annotatedType.getDeclaredMethod("value");
 					info.name = (String)method.invoke(annotation);
+				}  else if (InitBean.class.equals(annotatedType ) ) {
+					
+					if (info == null ) {info = new Info(configBundleName, clazz, field);}
+					
+					Method method = annotatedType.getDeclaredMethod("value");
+					info.name = (String)method.invoke(annotation);
+					info.isBean = true;
 				} else if (InitEnvVariable.class.equals(annotatedType ) ) {
 					
 					if (info == null ) {info = new Info(configBundleName, clazz, field);}
@@ -97,6 +105,10 @@ public final class Info {
 	public boolean isEnvVariable() {
 		return isEnvVariable;
 	}
+	
+	public boolean isBean() {
+		return isBean;
+	}
 
 	@Override
 	public String toString() {
@@ -104,6 +116,7 @@ public final class Info {
 				+ ", policy=" + policy
 				+ ", field=" + field.getName()
 				+ ", class=" + clazz.getName()
-				+ ", isEnvVariable=" + isEnvVariable;
+				+ ", isEnvVariable=" + isEnvVariable
+				+ ", isBean=" + isBean;
 	}
 }

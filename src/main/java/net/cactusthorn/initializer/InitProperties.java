@@ -24,6 +24,7 @@ public class InitProperties {
 
 	private String name = "default";
 	private Map<String,String> properties = new HashMap<>();
+	private Map<String,InitProperties> beanProperties = new HashMap<>();
 	
 	public InitProperties() {
 	}
@@ -71,13 +72,27 @@ public class InitProperties {
 	
 	public <T> InitProperties put(String propertyName, T propertyValue) {
 		
+		int dotIndex = propertyName.indexOf('.');
+		if (dotIndex != -1 ) {
+			
+			String beanName = propertyName.substring(0,dotIndex);
+			if (!beanProperties.containsKey(beanName)) {
+				beanProperties.put(beanName, new InitProperties().setName(beanName) );
+			}
+			beanProperties
+				.get(beanName)
+				.put(propertyName.substring(dotIndex+1), propertyValue == null ? null : propertyValue.toString() );
+			
+			return this;
+		}
+		
 		properties.put(propertyName, propertyValue == null ? null : propertyValue.toString());
 		return this;
 	}
 	
 	public InitProperties putAll(Map<String,String> properties) {
 		if (properties != null) {
-			this.properties.putAll(properties);
+			properties.entrySet().forEach(e -> this.properties.put(e.getKey(), e.getValue() ) );
 		}
 		return this;
 	}
@@ -93,5 +108,13 @@ public class InitProperties {
 
 	public String get(String propertyName) {
 		return properties.get(propertyName);
+	}
+	
+	public InitProperties getBeanInitProperties(String beanName ) {
+		return beanProperties.get(beanName);
+	}
+	
+	public boolean containsBeanInitProperties(String beanName ) {
+		return beanProperties.containsKey(beanName );
 	}
 }
