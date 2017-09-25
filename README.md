@@ -188,7 +188,9 @@ public class CustomTypesTest {
 				try {
 					return Value.of(
 						new MySimple(
-								Boolean.valueOf(parts[0] ), Integer.valueOf(parts[1] ) ) );
+								Boolean.valueOf(parts[0] ), 
+								Integer.valueOf(parts[1] ) ) 
+						);
 				} catch (Exception e) {
 					throw new InitializerException(info, WRONG_VALUE, e);
 				}
@@ -216,7 +218,6 @@ public class CustomTypesTest {
 				return null;
 			}
 		}
-		
 	}
 	
 	@InitProperty
@@ -231,7 +232,6 @@ public class CustomTypesTest {
 	@InitProperty
 	ConcurrentHashMap<String,MySimple> myConcurrentMap;
 
-	
 	@Test
 	public void testAll() throws URISyntaxException, IOException {
 		
@@ -260,16 +260,20 @@ public class CustomTypesTest {
 ```
 
 ## What it can initialize for the moment?
-1. all primitive and simple object types, StringBuffer, StringBuilder, BigDecimal, BigInteger, java.util.Date, java.sql.Date, java.util.Calendar  
-2. one-dimensional arrays of any type which described above
-3. basic Lists & Sets with generic of any types which described above
-4. basic Maps with generic of any types which described above as key or value
-5. Customizing date/time formats
-6. Requirements policies for properties
-7. Naming (@InitPropertyName)
-8. thread safe
-9. Easy extendable for new types
-10. Check unit tests - a lot of examples there.
+* all primitive and simple object types, StringBuffer, StringBuilder, BigDecimal, BigInteger, java.util.Date, java.sql.Date, java.util.Calendar  
+* one-dimensional arrays of any type which described above
+* basic Lists & Sets with generic of any types which described above
+* basic Maps with generic of any types which described above as key or value
+* customizing date/time patterns
+* requirements policies for properties
+* naming -> @InitPropertyName
+* beans initialization (recursive) -> @InitBean
+* initializaton by environment variables -> @InitEnvVariable 
+* extendable for support new types, and new type will work with array, beans and coollection
+* Check unit tests - a lot of examples there
+
+## What it can NOT initialize
+* fields based on not static inner classes
 
 ## License
 Initializer is released under the BSD 2-Clause License
