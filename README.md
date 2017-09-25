@@ -8,7 +8,7 @@ Idea is, that configuration properties present in short and human readable way,
 when even multi-value properties are stored in one line. 
 And then data is using to intitialize classes with complex types without any effort from the developer.
 
-## Very simple example
+## Simple example
 Let say we have the class:
 ```java
 import java.math.BigInteger;
@@ -23,14 +23,11 @@ import static net.cactusthorn.initializer.annotations.InitPropertyPolicy.*;
  */
 public class MyClass {
 
-	@InitPropertyName("check")
-	private boolean isAvailable;
+	@InitPropertyName("check") private boolean isAvailable;
 	
-	@InitProperty
-	private BigInteger[] values;
+	@InitProperty private BigInteger[] values;
 	
-	@InitProperty(OPTIONAL)
-	private Map<String,java.util.Date> dates;
+	@InitProperty(OPTIONAL) private Map<String,java.util.Date> dates;
 
 	@Override
 	public String toString() {
@@ -47,9 +44,6 @@ import net.cactusthorn.initializer.Initializer;
 
 public class MyInit {
 	
-	private static final Initializer initializer = 
-		new Initializer().setValuesSeparator(',').trimMultiValues(true);
-	
 	public static void main(String... args) {
 		
 		Map<String,String> prop = new HashMap<>();
@@ -59,12 +53,66 @@ public class MyInit {
 		
 		MyClass myClass =  new MyClass();
 	
-		initializer.initialize(InitProperties.from(prop), myClass);
+		new Initializer().setValuesSeparator(',').trimMultiValues(true).initialize(InitProperties.from(prop), myClass);
 		
 		System.out.println(myClass.toString());
 	}
 }
 ```
+## Beans example
+Properties:
+```
+test-bean.date = 2017-09-17T11:16:50+01:00
+test-bean.map = A=10, B=20, C=30 
+test-bean.sub-test-bean.name = Super Name
+test-bean.sub-test-bean.values = 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000
+simple=SIMPLE
+```
+Test:
+```java
+import org.junit.Test;
+import static org.junit.Assert.*;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Map;
+
+import net.cactusthorn.initializer.annotations.*;
+
+public class BeanTest {
+
+	static class SubTestBean {
+		@InitProperty String name;
+		@InitProperty int[] values;
+	}
+
+	static class TestBean {
+		@InitProperty java.util.Date date;
+		@InitProperty Map<String, Integer> map;
+		@InitBean("sub-test-bean") SubTestBean subTestBean;
+	}
+	
+	@InitBean("test-bean") TestBean testBean;
+	
+	@InitProperty String simple;
+	
+	@Test
+	public void testBean() throws URISyntaxException, IOException {
+		
+		Path path = Paths.get(getClass().getClassLoader().getResource("init-bean.properties").toURI());
+		
+		new Initializer().trimMultiValues(true).initialize(InitProperties.load(path), this);
+		
+		assertEquals("Super Name", testBean.subTestBean.name);
+		assertEquals(9, testBean.subTestBean.values.length);
+		assertEquals(3, testBean.map.size());
+		assertEquals("SIMPLE", simple);
+	}
+}
+```
+
 ## What it can initialize for the moment?
 1. all primitive and simple object types, StringBuffer, StringBuilder, BigDecimal, BigInteger, java.util.Date, java.sql.Date, java.util.Calendar  
 2. one-dimensional arrays of any type which described above
