@@ -41,6 +41,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.cactusthorn.initializer.Initializer;
+import net.cactusthorn.initializer.properties.InitProperties;
+import net.cactusthorn.initializer.properties.InitPropertiesBuilder;
 
 public class MyInit {
 	
@@ -82,6 +84,10 @@ import java.nio.file.Paths;
 import java.util.Map;
 
 import net.cactusthorn.initializer.annotations.*;
+import net.cactusthorn.initializer.properties.InitProperties;
+import net.cactusthorn.initializer.properties.InitPropertiesBuilder;
+
+import static net.cactusthorn.initializer.annotations.InitPropertyPolicy.*;
 
 public class BeanTest {
 
@@ -93,10 +99,10 @@ public class BeanTest {
 	static class TestBean {
 		@InitProperty java.util.Date date;
 		@InitProperty Map<String, Integer> map;
-		@InitBean("sub-test-bean") SubTestBean subTestBean;
+		@InitBean("sub-test-bean") @InitProperty(REQUIRED) SubTestBean subTestBean;
 	}
 	
-	@InitBean("test-bean") TestBean testBean;
+	@InitBean("test-bean") @InitProperty(REQUIRED) TestBean testBean;
 	
 	@InitProperty String simple;
 	
@@ -105,7 +111,9 @@ public class BeanTest {
 		
 		Path path = Paths.get(getClass().getClassLoader().getResource("init-bean.properties").toURI());
 		
-		new Initializer().trimMultiValues(true).initialize(InitProperties.load(path), this);
+		InitProperties prop = new InitPropertiesBuilder().load(path).trimMultiValues(true).build();
+		
+		new Initializer().initialize(prop, this);
 		
 		assertEquals("Super Name", testBean.subTestBean.name);
 		assertEquals(9, testBean.subTestBean.values.length);
@@ -137,6 +145,8 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.cactusthorn.initializer.annotations.*;
+import net.cactusthorn.initializer.properties.InitProperties;
+import net.cactusthorn.initializer.properties.InitPropertiesBuilder;
 import net.cactusthorn.initializer.types.*;
 import static net.cactusthorn.initializer.InitializerException.StandardError.WRONG_VALUE;
 
@@ -174,8 +184,13 @@ public class CustomTypesTest {
 		}
 
 		@Override
-		public Value<?> createObject(Class<?> fieldType, Type fieldGenericType, Info info, 
-			String propertyValue, List<ITypes> availableTypes) throws InitializerException {
+		public Value<?> createObject(
+				Class<?> fieldType, 
+				Type fieldGenericType,
+				Info info, 
+				String propertyValue,
+				InitProperties initProperties,
+				Collection<ITypes> availableTypes) throws InitializerException {
 			
 			boolean empty = propertyValue.isEmpty();
 			
@@ -188,11 +203,7 @@ public class CustomTypesTest {
 				String[] parts = propertyValue.split(",");
 				
 				try {
-					return Value.of(
-						new MySimple(
-								Boolean.valueOf(parts[0] ), 
-								Integer.valueOf(parts[1] ) ) 
-						);
+					return Value.of(new MySimple(Boolean.valueOf(parts[0] ), Integer.valueOf(parts[1] ) ) );
 				} catch (Exception e) {
 					throw new InitializerException(info, WRONG_VALUE, e);
 				}
@@ -213,13 +224,12 @@ public class CustomTypesTest {
 			} 
 			
 			try {
-				return 
-					(Constructor<? extends Map<Object,Object>>)
-						ConcurrentHashMap.class.getConstructor();
+				return (Constructor<? extends Map<Object,Object>>)ConcurrentHashMap.class.getConstructor();
 			} catch (NoSuchMethodException|SecurityException e) {
 				return null;
 			}
 		}
+		
 	}
 	
 	@InitProperty
@@ -234,24 +244,20 @@ public class CustomTypesTest {
 	@InitProperty
 	ConcurrentHashMap<String,MySimple> myConcurrentMap;
 
+	
 	@Test
 	public void testAll() throws URISyntaxException, IOException {
 		
-		MySimple[] correctArray = 
-			new MySimple[]{
-					new MySimple(true, 200),
-					new MySimple(true, 300),
-					new MySimple(false, 700)
-			};
+		MySimple[] correctArray = new MySimple[]{new MySimple(true, 200),new MySimple(true, 300),new MySimple(false, 700)};
 		
 		Path path = Paths.get(getClass().getClassLoader().getResource("init-custom.properties").toURI());
+		
+		InitProperties prop = new InitPropertiesBuilder().setValuesSeparator('/').trimMultiValues(true).load(path).build();
 		
 		new Initializer()
 			.addTypes(MySimpleType.class)
 			.addTypes(MyMultiType.class)
-			.setValuesSeparator('/')
-			.trimMultiValues(true)
-			.initialize(InitProperties.load(path), this);
+			.initialize(prop, this);
 		
 		assertEquals(3, myConcurrentMap.size());
 		assertEquals(3, mySimpleMap.size());
