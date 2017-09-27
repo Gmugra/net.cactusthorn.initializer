@@ -11,61 +11,65 @@
 package net.cactusthorn.initializer.types;
 
 import java.util.*;
+import java.util.concurrent.*;
+import java.beans.beancontext.*;
 import java.lang.reflect.*;
 
 import net.cactusthorn.initializer.InitializerException;
 import net.cactusthorn.initializer.annotations.Info;
 import net.cactusthorn.initializer.properties.InitProperties;
 
-public class ListSetTypes extends MultiValueTypes {
+public class CollectionTypes extends MultiValueTypes {
 	
 	@Override
-	public ListSetTypes clone() throws CloneNotSupportedException {
-		return (ListSetTypes)super.clone();
+	public CollectionTypes clone() throws CloneNotSupportedException {
+		return (CollectionTypes)super.clone();
 	}
 	
 	@SuppressWarnings({ "unchecked"})
-	protected Constructor<? extends Collection<Object>> getConstructor(Class<?> fieldType ) {
+	protected Constructor<? extends Collection<Object>> getConstructor(Info info, Class<?> fieldType ) {
 		
 		Class<?> clazz = null;
 		if (fieldType.isInterface() ) {
 			
 			if (List.class.isAssignableFrom(fieldType) ) {
 				clazz = ArrayList.class;
+			} else if (NavigableSet.class.isAssignableFrom(fieldType) ) {
+				clazz = TreeSet.class;
 			} else if (SortedSet.class.isAssignableFrom(fieldType) ) {
 				clazz = TreeSet.class;
 			} else if (Set.class.isAssignableFrom(fieldType) ) {
 				clazz = HashSet.class;
+			} else if (BlockingDeque.class.isAssignableFrom(fieldType) ) {
+				clazz = LinkedBlockingDeque.class;
+			} else if (TransferQueue.class.isAssignableFrom(fieldType) ) {
+				clazz = LinkedTransferQueue.class;
+			} else if (BlockingQueue.class.isAssignableFrom(fieldType) ) {
+				clazz = LinkedBlockingDeque.class;
+			} else if (Deque.class.isAssignableFrom(fieldType) ) {
+				clazz = ArrayDeque.class;
+			} else if (Queue.class.isAssignableFrom(fieldType) ) {
+				clazz = LinkedList.class;
+			} else if (BeanContextServices.class.isAssignableFrom(fieldType) ) {
+				clazz = BeanContextServicesSupport.class;
+			} else if (BeanContext.class.isAssignableFrom(fieldType) ) {
+				clazz = BeanContextSupport.class;
+			} else if (Collection.class.isAssignableFrom(fieldType) ) {
+				clazz = ArrayList.class;
 			} else {
 				return null;
 			}
+		} else if ( !Modifier.isAbstract(fieldType.getModifiers() ) || Collection.class.isAssignableFrom(fieldType) ) {
+			
+			clazz = fieldType;
 		} else {
-		
-			if (ArrayList.class.equals(fieldType) ) {
-				clazz = ArrayList.class;
-			} else if (LinkedList.class.equals(fieldType) ) {
-				clazz = LinkedList.class;
-			} else if (HashSet.class.equals(fieldType) ) {
-				clazz = HashSet.class;
-			} else if (LinkedHashSet.class.equals(fieldType) ) {
-				clazz = LinkedHashSet.class;
-			} else if (TreeSet.class.equals(fieldType) ) {
-				clazz = TreeSet.class;
-			} else if (AbstractSequentialList.class.equals(fieldType) ) {
-				clazz = LinkedList.class;
-			} else if (AbstractList.class.equals(fieldType) ) {
-				clazz = ArrayList.class;
-			} else if (AbstractSet.class.equals(fieldType) ) {
-				clazz = HashSet.class;
-			} else {
-				return null;
-			}
+			return null;
 		}
-	
+		
 		try {
 			return (Constructor<? extends Collection<Object>>)clazz.getConstructor();
 		} catch (NoSuchMethodException|SecurityException e) {
-			return null;
+			throw new InitializerException(info, e);
 		}
 	}
 	
@@ -94,7 +98,7 @@ public class ListSetTypes extends MultiValueTypes {
 			return Value.empty();
 		}
 		
-		Constructor<? extends Collection<Object>> constructor = getConstructor(fieldType);
+		Constructor<? extends Collection<Object>> constructor = getConstructor(info, fieldType);
 		if (constructor == null) {
 			return Value.empty();
 		}

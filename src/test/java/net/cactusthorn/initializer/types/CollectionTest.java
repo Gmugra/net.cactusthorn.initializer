@@ -25,7 +25,7 @@ import net.cactusthorn.initializer.properties.InitPropertiesBuilder;
 
 import static net.cactusthorn.initializer.annotations.InitPropertyPolicy.*;
 
-public class ListSetTest {
+public class CollectionTest {
 
 	InitPropertiesBuilder pb = new InitPropertiesBuilder();
 	
@@ -46,16 +46,7 @@ public class ListSetTest {
 	Set<String> set;
 	
 	@InitProperty
-	AbstractList<String> abstractList;
-	
-	@InitProperty
-	AbstractSequentialList<String> abstractSequentialList;
-	
-	@InitProperty
 	LinkedList<String> linkedList;
-	
-	@InitProperty
-	AbstractSet<String> abstractSet;
 	
 	@InitProperty
 	HashSet<String> hashSet;
@@ -73,6 +64,7 @@ public class ListSetTest {
 	public void testAllowedEmpty() throws ParseException {
 		
 		initializer.initialize(pb.put("dateset", "").build(), this);
+		assertEquals(HashSet.class,dateset.getClass());
 		assertEquals(0,dateset.size());
 	}
 	
@@ -90,20 +82,13 @@ public class ListSetTest {
 		assertThat(linkedHashSet, hasItems("a","b","c","d"));
 		assertEquals(4,linkedHashSet.size());
 	}
-	
-	@Test
-	public void testAbstractSet() {
-		
-		initializer.initialize(pb.put("abstractSet", "a,b,c,c,d").build(), this);
-		assertThat(abstractSet, hasItems("a","b","c","d"));
-		assertEquals(4,abstractSet.size());
-	}
 
 	@Test
 	public void testTreeSet() {
 		
 		initializer.initialize(pb.put("treeSet", "a,b,c,c,d").build(), this);
 		assertThat(treeSet, hasItems("a","b","c","d"));
+		assertEquals(TreeSet.class,treeSet.getClass());
 		assertEquals(4,treeSet.size());
 	}
 	
@@ -120,20 +105,6 @@ public class ListSetTest {
 
 		initializer.initialize(pb.put("linkedList", "a,b,c,d").build(), this);
 		assertThat(linkedList, hasItems("a","b","c","d"));
-	}
-	
-	@Test
-	public void testAbstractSequentialList() {
-
-		initializer.initialize(pb.put("abstractSequentialList", "a,b,c,d").build(), this);
-		assertEquals(4,abstractSequentialList.size());
-	}
-	
-	@Test
-	public void testAbstractList() {
-
-		initializer.initialize(pb.put("abstractList", "a,b,c,d").build(), this);
-		assertEquals(4,abstractList.size());
 	}
 	
 	@Test
@@ -156,6 +127,7 @@ public class ListSetTest {
 
 		initializer.initialize(pb.put("sortedSet", "a,b,c,d,d,d").build(), this);
 		assertThat(sortedSet, hasItems("a","b","c","d"));
+		assertEquals(TreeSet.class,sortedSet.getClass());
 		assertEquals(4,sortedSet.size());
 	}
 	

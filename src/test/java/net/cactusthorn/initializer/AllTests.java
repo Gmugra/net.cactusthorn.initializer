@@ -28,7 +28,7 @@ import org.junit.runners.Suite.SuiteClasses;
 	SimplesTest.class,
 	DateTimeTest.class,
 	ArraysTest.class,
-	ListSetTest.class,
+	CollectionTest.class,
 	MapTest.class,
 	CustomTypesTest.class,
 	InitPropertiesTest.class,

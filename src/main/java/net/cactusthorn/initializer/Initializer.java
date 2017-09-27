@@ -28,7 +28,7 @@ public final class Initializer {
 		addTypes(PrimitiveTypes.class);
 		addTypes(SimpleTypes.class);
 		addTypes(DateTimeTypes.class);
-		addTypes(ListSetTypes.class);
+		addTypes(CollectionTypes.class);
 		addTypes(ArrayTypes.class);
 		addTypes(MapTypes.class);
 	}
