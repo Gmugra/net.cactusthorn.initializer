@@ -10,14 +10,14 @@
  ******************************************************************************/
 package net.cactusthorn.initializer.types;
 
-public class StringsPair {
+import java.util.AbstractMap.SimpleEntry;
 
-	private String key;
-	private String value;
-	
+public class StringsPair extends SimpleEntry<String,String> {
+
+	private static final long serialVersionUID = 0L;
+
 	private StringsPair(String key, String value) {
-		this.key = key;
-		this.value = value;
+		super(key,value);
 	}
 	
 	public static StringsPair of(String key, String value) {
@@ -26,18 +26,5 @@ public class StringsPair {
 	
 	public static StringsPair of(String key) {
 		return new StringsPair(key, "");
-	}
-	
-	public String key() {
-		return key;
-	}
-	
-	public String value() {
-		return value;
-	}
-	
-	@Override
-	public String toString() {
-		return "{"+ key + ":" + value +"}";
 	}
 }

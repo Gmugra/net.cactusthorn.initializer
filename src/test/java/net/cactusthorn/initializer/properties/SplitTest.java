@@ -26,7 +26,7 @@ public class SplitTest {
 	@Test
 	public void testPairMultiEquals() {
 		
-		String correct = "[{aa:}, {bb:20}, {cc:}, {xxx:345}]";
+		String correct = "[aa=, bb=20, cc=, xxx=345]";
 		List<StringsPair> result = splitter.splitPairs("aa====bb,bb=20,cc==we\\,er,xxx=345"); 
 		//System.out.println(result);
 		assertEquals(correct, result.toString());
@@ -35,15 +35,15 @@ public class SplitTest {
 	@Test
 	public void testPairSimpleEscaping() {
 		
-		String correct = "[{aa=bb:cc}, {bb:20}, {cc:we,er}, {xxx:345}]";
-		List<StringsPair> result = splitter.splitPairs("aa\\=bb=cc,bb=20,cc=we\\,er,xxx=345"); 
+		String correct = "[aa=bb=cc, bb=20, cc=we,er, xxx=345]";
+		List<StringsPair> result = splitter.splitPairs("aa\\=bb=cc,bb=20,cc=we\\,er,xxx=345");
 		assertEquals(correct, result.toString());
 	}
 		
 	@Test
 	public void testSimplePair() {
 		
-		String correct = "[{aa:10}, {bb:20}, {cc:weer}, {xxx:345}]";
+		String correct = "[aa=10, bb=20, cc=weer, xxx=345]";
 		List<StringsPair> result = splitter.splitPairs("aa=10,bb=20,cc=weer,xxx=345"); 
 		assertEquals(correct, result.toString());
 	}
