@@ -21,10 +21,10 @@ import static net.cactusthorn.initializer.InitializerException.StandardError.*;
 import static net.cactusthorn.initializer.annotations.InitPropertyPolicy.*;
 import net.cactusthorn.initializer.Initializer;
 import net.cactusthorn.initializer.InitializerException;
-import net.cactusthorn.initializer.InitProperties;
-import net.cactusthorn.initializer.InitPropertiesBuilder;
 import net.cactusthorn.initializer.annotations.InitProperty;
 import net.cactusthorn.initializer.annotations.InitPropertyName;
+import net.cactusthorn.initializer.properties.InitProperties;
+import net.cactusthorn.initializer.properties.InitPropertiesBuilder;
 
 public class ArraysTest {
 	

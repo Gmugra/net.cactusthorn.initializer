@@ -52,8 +52,10 @@ public class MyInit {
 		prop.put("dates", "first=2017-09-17T11:16:50+01:00 , second=2017-10-05 , third=2017-09-17T11:16:50");
 		
 		MyClass myClass =  new MyClass();
+		
+		InitProperties props = new InitPropertiesBuilder().setValuesSeparator(',').trimMultiValues(true).from(prop).build();
 	
-		new Initializer().setValuesSeparator(',').trimMultiValues(true).initialize(InitProperties.from(prop), myClass);
+		new Initializer().initialize(props, myClass);
 		
 		System.out.println(myClass.toString());
 	}

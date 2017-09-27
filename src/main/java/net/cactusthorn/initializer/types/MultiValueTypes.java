@@ -16,9 +16,9 @@ import static net.cactusthorn.initializer.InitializerException.StandardError.WRO
 import java.lang.reflect.Type;
 import java.util.Collection;
 
-import net.cactusthorn.initializer.InitProperties;
 import net.cactusthorn.initializer.InitializerException;
 import net.cactusthorn.initializer.annotations.Info;
+import net.cactusthorn.initializer.properties.InitProperties;
 
 public abstract class MultiValueTypes implements ITypes {
 	

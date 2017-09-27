@@ -17,10 +17,11 @@ import java.util.*;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import net.cactusthorn.initializer.InitPropertiesBuilder;
 import net.cactusthorn.initializer.Initializer;
 import net.cactusthorn.initializer.InitializerException;
 import net.cactusthorn.initializer.annotations.*;
+import net.cactusthorn.initializer.properties.InitPropertiesBuilder;
+
 import static net.cactusthorn.initializer.InitializerException.StandardError.*;
 import static net.cactusthorn.initializer.annotations.InitPropertyPolicy.*;
 

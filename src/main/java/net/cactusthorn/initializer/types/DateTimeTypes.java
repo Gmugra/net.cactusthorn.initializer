@@ -19,9 +19,10 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Collection;
 
-import net.cactusthorn.initializer.InitProperties;
 import net.cactusthorn.initializer.InitializerException;
 import net.cactusthorn.initializer.annotations.Info;
+import net.cactusthorn.initializer.properties.InitProperties;
+
 import static net.cactusthorn.initializer.InitializerException.StandardError.*;
 
 public class DateTimeTypes implements ITypes {

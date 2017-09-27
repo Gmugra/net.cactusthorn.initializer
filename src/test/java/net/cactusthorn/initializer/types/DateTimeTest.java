@@ -19,8 +19,8 @@ import org.junit.Test;
 import static net.cactusthorn.initializer.annotations.InitPropertyPolicy.OPTIONAL;
 import net.cactusthorn.initializer.Initializer;
 import net.cactusthorn.initializer.InitializerException;
-import net.cactusthorn.initializer.InitPropertiesBuilder;
 import net.cactusthorn.initializer.annotations.*;
+import net.cactusthorn.initializer.properties.InitPropertiesBuilder;
 
 public class DateTimeTest {
 	

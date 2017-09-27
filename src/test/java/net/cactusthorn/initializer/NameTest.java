@@ -16,8 +16,9 @@ import org.junit.Test;
 
 import net.cactusthorn.initializer.Initializer;
 import net.cactusthorn.initializer.InitializerException;
-import net.cactusthorn.initializer.InitProperties;
 import net.cactusthorn.initializer.annotations.*;
+import net.cactusthorn.initializer.properties.InitProperties;
+import net.cactusthorn.initializer.properties.InitPropertiesBuilder;
 
 public class NameTest {
 	

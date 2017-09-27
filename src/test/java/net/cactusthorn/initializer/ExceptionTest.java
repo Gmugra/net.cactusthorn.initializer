@@ -17,6 +17,8 @@ import java.util.StringTokenizer;
 import net.cactusthorn.initializer.Initializer;
 import net.cactusthorn.initializer.InitializerException;
 import net.cactusthorn.initializer.annotations.InitProperty;
+import net.cactusthorn.initializer.properties.InitPropertiesBuilder;
+
 import static net.cactusthorn.initializer.InitializerException.StandardError.*;
 import static net.cactusthorn.initializer.annotations.InitPropertyPolicy.*;
 

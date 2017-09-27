@@ -20,6 +20,9 @@ import java.nio.file.Paths;
 import java.util.Map;
 
 import net.cactusthorn.initializer.annotations.*;
+import net.cactusthorn.initializer.properties.InitProperties;
+import net.cactusthorn.initializer.properties.InitPropertiesBuilder;
+
 import static net.cactusthorn.initializer.annotations.InitPropertyPolicy.*;
 
 public class BeanTest {

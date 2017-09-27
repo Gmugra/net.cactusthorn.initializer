@@ -13,9 +13,9 @@ package net.cactusthorn.initializer.types;
 import java.lang.reflect.*;
 import java.util.Collection;
 
-import net.cactusthorn.initializer.InitProperties;
 import net.cactusthorn.initializer.InitializerException;
 import net.cactusthorn.initializer.annotations.Info;
+import net.cactusthorn.initializer.properties.InitProperties;
 
 public interface ITypes extends Cloneable {
 	

@@ -8,7 +8,7 @@
  * 
  * http://opensource.org/licenses/BSD-2-Clause
  ******************************************************************************/
-package net.cactusthorn.initializer;
+package net.cactusthorn.initializer.properties;
 
 import java.io.BufferedReader;
 import java.io.IOException;

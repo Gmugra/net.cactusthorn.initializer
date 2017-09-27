@@ -23,6 +23,8 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.cactusthorn.initializer.annotations.*;
+import net.cactusthorn.initializer.properties.InitProperties;
+import net.cactusthorn.initializer.properties.InitPropertiesBuilder;
 import net.cactusthorn.initializer.types.*;
 import static net.cactusthorn.initializer.InitializerException.StandardError.WRONG_VALUE;
 

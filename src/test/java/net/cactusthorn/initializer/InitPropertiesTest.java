@@ -23,6 +23,10 @@ import java.nio.file.Paths;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import net.cactusthorn.initializer.properties.InitProperties;
+import net.cactusthorn.initializer.properties.InitPropertiesBuilder;
+
 import static org.junit.Assert.*;
 
 public class InitPropertiesTest {

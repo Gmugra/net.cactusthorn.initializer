@@ -1,4 +1,4 @@
-package net.cactusthorn.initializer;
+package net.cactusthorn.initializer.properties;
 
 import java.util.ArrayList;
 import java.util.List;

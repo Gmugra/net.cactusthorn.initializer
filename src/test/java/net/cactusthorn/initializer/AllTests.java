@@ -10,6 +10,7 @@
  ******************************************************************************/
 package net.cactusthorn.initializer;
 
+import net.cactusthorn.initializer.properties.SplitTest;
 import net.cactusthorn.initializer.types.*;
 
 import org.junit.runner.RunWith;

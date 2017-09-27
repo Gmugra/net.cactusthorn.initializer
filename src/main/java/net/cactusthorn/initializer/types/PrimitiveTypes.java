@@ -13,9 +13,10 @@ package net.cactusthorn.initializer.types;
 import java.lang.reflect.Type;
 import java.util.Collection;
 
-import net.cactusthorn.initializer.InitProperties;
 import net.cactusthorn.initializer.InitializerException;
 import net.cactusthorn.initializer.annotations.Info;
+import net.cactusthorn.initializer.properties.InitProperties;
+
 import static net.cactusthorn.initializer.InitializerException.StandardError.*;
 
 public class PrimitiveTypes implements ITypes {

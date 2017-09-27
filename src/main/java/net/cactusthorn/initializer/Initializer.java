@@ -14,6 +14,7 @@ import java.util.*;
 import java.lang.reflect.*;
 
 import net.cactusthorn.initializer.annotations.*;
+import net.cactusthorn.initializer.properties.InitProperties;
 import net.cactusthorn.initializer.types.*;
 import static net.cactusthorn.initializer.InitializerException.StandardError;
 import static net.cactusthorn.initializer.annotations.InitPropertyPolicy.*;

@@ -16,8 +16,8 @@ import static org.junit.Assert.*;
 import static net.cactusthorn.initializer.annotations.InitPropertyPolicy.OPTIONAL;
 import net.cactusthorn.initializer.Initializer;
 import net.cactusthorn.initializer.InitializerException;
-import net.cactusthorn.initializer.InitPropertiesBuilder;
 import net.cactusthorn.initializer.annotations.InitProperty;
+import net.cactusthorn.initializer.properties.InitPropertiesBuilder;
 
 public class PrimitivesTest {
 

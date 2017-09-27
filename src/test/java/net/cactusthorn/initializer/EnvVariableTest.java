@@ -14,6 +14,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import net.cactusthorn.initializer.annotations.InitEnvVariable;
+import net.cactusthorn.initializer.properties.InitPropertiesBuilder;
 
 public class EnvVariableTest {
 

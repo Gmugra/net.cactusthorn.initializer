@@ -8,11 +8,13 @@
  * 
  * http://opensource.org/licenses/BSD-2-Clause
  ******************************************************************************/
-package net.cactusthorn.initializer;
+package net.cactusthorn.initializer.properties;
 
 import static org.junit.Assert.*;
 
 import java.util.List;
+
+import net.cactusthorn.initializer.properties.Splitter;
 import net.cactusthorn.initializer.types.StringsPair;
 
 import org.junit.Test;

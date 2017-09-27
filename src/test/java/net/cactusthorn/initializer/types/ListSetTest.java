@@ -19,9 +19,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import net.cactusthorn.initializer.InitPropertiesBuilder;
 import net.cactusthorn.initializer.Initializer;
 import net.cactusthorn.initializer.annotations.InitProperty;
+import net.cactusthorn.initializer.properties.InitPropertiesBuilder;
+
 import static net.cactusthorn.initializer.annotations.InitPropertyPolicy.*;
 
 public class ListSetTest {

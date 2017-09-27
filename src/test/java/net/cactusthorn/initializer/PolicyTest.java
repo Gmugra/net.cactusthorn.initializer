@@ -15,8 +15,10 @@ import static org.junit.Assert.*;
 
 import net.cactusthorn.initializer.Initializer;
 import net.cactusthorn.initializer.InitializerException;
-import net.cactusthorn.initializer.InitProperties;
 import net.cactusthorn.initializer.annotations.*;
+import net.cactusthorn.initializer.properties.InitProperties;
+import net.cactusthorn.initializer.properties.InitPropertiesBuilder;
+
 import static net.cactusthorn.initializer.annotations.InitPropertyPolicy.*;
 
 public class PolicyTest {

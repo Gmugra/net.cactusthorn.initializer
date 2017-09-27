@@ -15,9 +15,9 @@ import java.util.List;
 import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 
-import net.cactusthorn.initializer.InitProperties;
 import net.cactusthorn.initializer.InitializerException;
 import net.cactusthorn.initializer.annotations.Info;
+import net.cactusthorn.initializer.properties.InitProperties;
 
 public class ArrayTypes extends MultiValueTypes {
 		

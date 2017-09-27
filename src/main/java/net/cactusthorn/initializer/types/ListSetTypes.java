@@ -13,9 +13,9 @@ package net.cactusthorn.initializer.types;
 import java.util.*;
 import java.lang.reflect.*;
 
-import net.cactusthorn.initializer.InitProperties;
 import net.cactusthorn.initializer.InitializerException;
 import net.cactusthorn.initializer.annotations.Info;
+import net.cactusthorn.initializer.properties.InitProperties;
 
 public class ListSetTypes extends MultiValueTypes {
 	
