@@ -19,13 +19,13 @@ import static org.junit.Assert.*;
 import static net.cactusthorn.initializer.annotations.InitPropertyPolicy.OPTIONAL;
 import net.cactusthorn.initializer.Initializer;
 import net.cactusthorn.initializer.InitializerException;
-import net.cactusthorn.initializer.InitProperties;
+import net.cactusthorn.initializer.InitPropertiesBuilder;
 import net.cactusthorn.initializer.annotations.InitProperty;
 
 public class SimplesTest {
 
 	Initializer initializer = new Initializer();
-	InitProperties bundle = new InitProperties();
+	InitPropertiesBuilder builder = new InitPropertiesBuilder();
 	
 	@InitProperty(OPTIONAL)
 	Boolean bool = Boolean.FALSE;
@@ -63,334 +63,196 @@ public class SimplesTest {
 	@Test(expected = InitializerException.class)
 	public void testBigIntegerException() {
 		
-		bundle
-			.clear()
-			.put("bigi", "xx");
-		
-		initializer.initialize(bundle, this);
+		initializer.initialize(builder.put("bigi", "xx").build(), this);
 	}
 	
 	@Test
 	public void testBigInteger() {
 		
-		bundle.clear();
-		initializer.initialize(bundle, this);
+		initializer.initialize(builder.build(), this);
 		assertEquals(bigi, new BigInteger("2095725747485959595054403"));
 		
-		bundle.put("bigi", "209572");
-		initializer.initialize(bundle, this);
+		initializer.initialize(builder.put("bigi", "209572").build(), this);
 		assertEquals(bigi, new BigInteger("209572"));
-		
-		bundle.put("bigi", null);
-		initializer.initialize(bundle, this);
-		assertNull(bigi);
-		
-		bigi = new BigInteger("209572");
-		
-		bundle.put("bigi", "");
-		initializer.initialize(bundle, this);
+	
+		initializer.initialize(builder.put("bigi", "").build(), this);
 		assertNull(bigi);
 	}
 	
 	@Test(expected = InitializerException.class)
 	public void testBigDecimalException() {
 		
-		bundle
-			.clear()
-			.put("bigd", "xx");
-		
-		initializer.initialize(bundle, this);
+		initializer.initialize(builder.put("bigd", "xx").build(), this);
 	}
 	
 	@Test
 	public void testBigDecimal() {
 		
-		bundle.clear();
-		initializer.initialize(bundle, this);
+		initializer.initialize(builder.build(), this);
 		assertEquals(bigd, new BigDecimal(-100.8574774d));
 		
-		bundle.put("bigd", new BigDecimal(66.66d));
-		initializer.initialize(bundle, this);
+		initializer.initialize(builder.put("bigd", new BigDecimal(66.66d)).build(), this);
 		assertEquals(bigd, new BigDecimal(66.66d));
-		
-		bundle.put("bigd", null);
-		initializer.initialize(bundle, this);
-		assertNull(bigd);
-		
-		bigd = new BigDecimal(66.66d);
-		
-		bundle.put("bigd", "");
-		initializer.initialize(bundle, this);
+
+		initializer.initialize(builder.put("bigd", "").build(), this);
 		assertNull(bigd);
 	}
 	
 	@Test
 	public void testString() {
 		
-		bundle.clear();
-		initializer.initialize(bundle, this);
+		initializer.initialize(builder.build(), this);
 		assertEquals(string, "test");
 		
-		bundle.put("string", "one");
-		initializer.initialize(bundle, this);
+		initializer.initialize(builder.put("string", "one").build(), this);
 		assertEquals(string, "one");
 		
-		bundle.put("string", null);
-		initializer.initialize(bundle, this);
-		assertNull(string);
-		
-		string = "AAA";
-		
-		bundle.put("string", "");
-		initializer.initialize(bundle, this);
+		initializer.initialize(builder.put("string", "").build(), this);
 		assertNull(string);
 	}
 	
 	@Test(expected = InitializerException.class)
 	public void testDoubleException() {
 		
-		bundle
-			.clear()
-			.put("_double", "xx");
-		
-		initializer.initialize(bundle, this);
+		initializer.initialize(builder.put("_double", "xx").build(), this);
 	}
 	
 	@Test
 	public void testDouble() {
 		
-		bundle.clear();
-		initializer.initialize(bundle, this);
+		initializer.initialize(builder.build(), this);
 		assertEquals(_double, -200.43d, 0.0001);
 		
-		bundle.put("_double", 66.66d);
-		initializer.initialize(bundle, this);
+		initializer.initialize(builder.put("_double", 66.66d).build(), this);
 		assertEquals(_double, 66.66d, 0.0001);
 		
-		bundle.put("_double", null);
-		initializer.initialize(bundle, this);
-		assertNull(_double);
-		
-		_double = 20.20d;
-		
-		bundle.put("_double", "");
-		initializer.initialize(bundle, this);
+		initializer.initialize(builder.put("_double", "").build(), this);
 		assertNull(_double);
 	}
 	
 	@Test(expected = InitializerException.class)
 	public void testFloatException() {
 		
-		bundle
-			.clear()
-			.put("_float", "qbc");
-		
-		initializer.initialize(bundle, this);
+		initializer.initialize(builder.put("_float", "qbc").build(), this);
 	}
 	
 	@Test
 	public void testFloat() {
 		
-		bundle.clear();
-		initializer.initialize(bundle, this);
+		initializer.initialize(builder.build(), this);
 		assertEquals(_float, -100.99f, 0.0001);
 		
-		bundle.put("_float", 55.55f);
-		initializer.initialize(bundle, this);
+		initializer.initialize(builder.put("_float", 55.55f).build(), this);
 		assertEquals(_float, 55.55f, 0.0001);
 		
-		bundle.put("_float", null);
-		initializer.initialize(bundle, this);
-		assertNull(_float);
-		
-		_float = 10.10f;
-		
-		bundle.put("_float", "");
-		initializer.initialize(bundle, this);
+		initializer.initialize(builder.put("_float", "").build(), this);
 		assertNull(_float);
 	}
 	
 	@Test(expected = InitializerException.class)
 	public void testShortException() {
 		
-		bundle
-			.clear()
-			.put("_short", -35000);
-		
-		initializer.initialize(bundle, this);
+		initializer.initialize(builder.put("_short", -35000).build(), this);
 	}
 	
 	@Test
 	public void testShort() {
 		
-		bundle.clear();
-		initializer.initialize(bundle, this);
+		initializer.initialize(builder.build(), this);
 		assertEquals(_short, Short.valueOf((short)50));
 		
-		bundle.put("_short", Short.valueOf((short)55));
-		initializer.initialize(bundle, this);
+		initializer.initialize(builder.put("_short", Short.valueOf((short)55)).build(), this);
 		assertEquals(_short, Short.valueOf((short)55));
 		
-		bundle.put("_short", null);
-		initializer.initialize(bundle, this);
-		assertNull(_short);
-		
-		_short = (short)20;
-		
-		bundle.put("_short", "");
-		initializer.initialize(bundle, this);
+		initializer.initialize(builder.put("_short", "").build(), this);
 		assertNull(_short);
 	}
 	
 	@Test(expected = InitializerException.class)
 	public void testLongException() {
 		
-		bundle
-			.clear()
-			.put("_long", "true");
-		
-		initializer.initialize(bundle, this);
+		initializer.initialize(builder.put("_long", "true").build(), this);
 	}
 	
 	@Test
 	public void testLong() {
 		
-		bundle.clear();
-		initializer.initialize(bundle, this);
+		initializer.initialize(builder.build(), this);
 		assertEquals(_long, Long.valueOf(40L));
 		
-		bundle.put("_long", Long.valueOf(44L));
-		initializer.initialize(bundle, this);
+		initializer.initialize(builder.put("_long", Long.valueOf(44L)).build(), this);
 		assertEquals(_long, Long.valueOf(44L));
 		
-		bundle.put("_long", null);
-		initializer.initialize(bundle, this);
-		assertNull(_long);
-		
-		_long = 10L;
-		
-		bundle.put("_long", "");
-		initializer.initialize(bundle, this);
+		initializer.initialize(builder.put("_long", "").build(), this);
 		assertNull(_long);
 	}
 	
 	@Test(expected = InitializerException.class)
 	public void testByteException() {
 		
-		bundle
-			.clear()
-			.put("_byte", 200);
-		
-		initializer.initialize(bundle, this);
+		initializer.initialize(builder.put("_byte", 200).build(), this);
 	}
 	
 	@Test
 	public void testByte() {
 		
-		bundle.clear();
-		initializer.initialize(bundle, this);
+		initializer.initialize(builder.build(), this);
 		assertEquals(_byte, Byte.valueOf((byte)30));
-		
-		bundle.put("_byte", Byte.valueOf((byte)33));
-		initializer.initialize(bundle, this);
+	
+		initializer.initialize(builder.put("_byte", Byte.valueOf((byte)33)).build(), this);
 		assertEquals(_byte, Byte.valueOf((byte)33));
 		
-		bundle.put("_byte", null);
-		initializer.initialize(bundle, this);
-		assertNull(_byte);
-		
-		_byte = (byte)10;
-		
-		bundle.put("_byte", "");
-		initializer.initialize(bundle, this);
+		initializer.initialize(builder.put("_byte", "").build(), this);
 		assertNull(_byte);
 	}
 	
 	@Test(expected = InitializerException.class)
 	public void testIntException() {
 		
-		bundle
-			.clear()
-			.put("integer", "abc");
-		
-		initializer.initialize(bundle, this);
+		initializer.initialize(builder.put("integer", "abc").build(), this);
 	}
 	
 	@Test
 	public void testInt() {
 		
-		bundle.clear();
-		initializer.initialize(bundle, this);
+		initializer.initialize(builder.build(), this);
 		assertEquals(integer, Integer.valueOf(10));
 		
-		bundle.put("integer", Integer.valueOf(20));
-		initializer.initialize(bundle, this);
+		initializer.initialize(builder.put("integer", Integer.valueOf(20)).build(), this);
 		assertEquals(integer, Integer.valueOf(20));
 		
-		try { 
-			bundle.put("integer", null);
-			initializer.initialize(bundle, this);
-			assertNull(integer);
-		} catch (Exception e ) {
-			e.printStackTrace();
-		}
-		
-		integer = 1;
-		
-		bundle.put("integer", "");
-		initializer.initialize(bundle, this);
+		initializer.initialize(builder.put("integer", "").build(), this);
 		assertNull(integer);
 	}
 	
 	@Test
 	public void testBoolean() {
 		
-		bundle.clear();
-		initializer.initialize(bundle, this);
+		initializer.initialize(builder.build(), this);
 		assertEquals(bool, Boolean.FALSE);
 		
-		bundle.put("bool", "true");
-		initializer.initialize(bundle, this);
+		initializer.initialize(builder.put("bool", "true").build(), this);
 		assertEquals(bool, Boolean.TRUE);
-		
-		bundle.put("bool", null);
-		initializer.initialize(bundle, this);
+		initializer.initialize(builder.put("bool", "").build(), this);
 		assertNull(bool);
 		
-		bool = Boolean.TRUE;
-		
-		bundle.put("bool", "");
-		initializer.initialize(bundle, this);
-		assertNull(bool);
-		
-		bundle.put("bool", "dcdcdcdc");
-		initializer.initialize(bundle, this);
+		initializer.initialize(builder.put("bool", "dcdcdcdc").build(), this);
 		assertEquals(bool, Boolean.FALSE);
 	}
 	
 	@Test
 	public void testChar() {
 		
-		bundle.clear();
-		initializer.initialize(bundle, this);
+		initializer.initialize(builder.build(), this);
 		assertEquals(_char, Character.valueOf('A'));
 		
-		bundle.put("_char", "");
-		initializer.initialize(bundle, this);
+		initializer.initialize(builder.put("_char", "").build(), this);
 		assertNull(_char);
-		
-		_char ='F';
-		
-		bundle.put("_char", null);
-		initializer.initialize(bundle, this);
-		assertNull(_char);
-		
-		bundle.put("_char", "Boom");
-		initializer.initialize(bundle, this);
+
+		initializer.initialize(builder.put("_char", "Boom").build(), this);
 		assertEquals(_char, Character.valueOf('B'));
 		
-		bundle.put("_char", "C");
-		initializer.initialize(bundle, this);
+		initializer.initialize(builder.put("_char", "C").build(), this);
 		assertEquals(_char, Character.valueOf('C'));
 	}
 	

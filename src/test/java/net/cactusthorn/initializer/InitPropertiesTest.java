@@ -74,13 +74,19 @@ public class InitPropertiesTest {
 	
 	@Test
 	public void testClear() {
-		InitProperties ip = InitProperties.from(prop).clear();
+		
+		InitPropertiesBuilder builder = new InitPropertiesBuilder().from(prop).clear();
+		
+		InitProperties ip = builder.build();
 		assertFalse(ip.contains("dates"));
 	}
 	
 	@Test
 	public void testPut() {
-		InitProperties ip = InitProperties.from(prop).clear().put("name", false);
+		
+		InitPropertiesBuilder builder = new InitPropertiesBuilder().from(prop).clear().put("name", false);
+		
+		InitProperties ip = builder.build();
 		assertFalse(ip.contains("dates"));
 		assertTrue(ip.contains("name"));
 	}

@@ -22,7 +22,7 @@ import net.cactusthorn.initializer.annotations.*;
 public class NameTest {
 	
 	Initializer initializer = new Initializer();
-	InitProperties bundle = new InitProperties();
+	InitPropertiesBuilder builder = new InitPropertiesBuilder();
 	
 	@InitPropertyName("BOOL")
 	boolean bool;
@@ -37,23 +37,15 @@ public class NameTest {
 	@Test(expected = InitializerException.class)
 	public void testNameWithPolicy() throws InitializerException {
 		
-		bundle
-			.clear()
-			.put("boolWithPolicy", true);
-		
-		initializer.initialize(bundle, this);
+		initializer.initialize(builder.put("boolWithPolicy", true).build(), this);
 	}
 	
 	@Test
 	public void testName() throws InitializerException {
 		
-		bundle
-			.clear()
-			.put("BOOL", true)
-			.put("BOOL2", true)
-			.put("boolNoName", true);
+		InitProperties prop = builder.put("BOOL", true).put("BOOL2", true).put("boolNoName", true).build();
 		
-		initializer.initialize(bundle, this);
+		initializer.initialize(prop, this);
 		
 		assertEquals(bool, true);
 		assertEquals(boolNoName, true);
@@ -62,11 +54,7 @@ public class NameTest {
 	@Test
 	public void testNoName() throws InitializerException {
 		
-		bundle
-			.clear()
-			.put("BOOL2", true);
-		
-		initializer.initialize(bundle, this);
+		initializer.initialize(builder.put("BOOL2", true).build(), this);
 		
 		assertEquals(bool, false);
 		assertEquals(boolNoName, false);

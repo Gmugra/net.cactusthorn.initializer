@@ -23,7 +23,7 @@ public class EnvVariableTest {
 	@Test
 	public void testJavaHome() {
 		
-		new Initializer().initialize(new InitProperties(), this);
+		new Initializer().initialize(new InitPropertiesBuilder().build(), this);
 		assertNotNull(javaHome);
 	}
 }

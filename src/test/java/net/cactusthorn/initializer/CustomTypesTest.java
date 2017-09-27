@@ -60,8 +60,13 @@ public class CustomTypesTest {
 		}
 
 		@Override
-		public Value<?> createObject(Class<?> fieldType, Type fieldGenericType, Info info, String propertyValue, List<ITypes> availableTypes) 
-				throws InitializerException {
+		public Value<?> createObject(
+				Class<?> fieldType, 
+				Type fieldGenericType,
+				Info info, 
+				String propertyValue,
+				InitProperties initProperties,
+				Collection<ITypes> availableTypes) throws InitializerException {
 			
 			boolean empty = propertyValue.isEmpty();
 			
@@ -123,12 +128,12 @@ public class CustomTypesTest {
 		
 		Path path = Paths.get(getClass().getClassLoader().getResource("init-custom.properties").toURI());
 		
+		InitProperties prop = new InitPropertiesBuilder().setValuesSeparator('/').trimMultiValues(true).load(path).build();
+		
 		new Initializer()
 			.addTypes(MySimpleType.class)
 			.addTypes(MyMultiType.class)
-			.setValuesSeparator('/')
-			.trimMultiValues(true)
-			.initialize(InitProperties.load(path), this);
+			.initialize(prop, this);
 		
 		assertEquals(3, myConcurrentMap.size());
 		assertEquals(3, mySimpleMap.size());
@@ -139,21 +144,30 @@ public class CustomTypesTest {
 	@Test
 	public void testConcurrentMap() {
 		
-		Initializer initializer = new Initializer()
-				.addTypes(MySimpleType.class).addTypes(MyMultiType.class)
-				.setValuesSeparator('/').trimMultiValues(true);
+		InitProperties prop = 
+			new InitPropertiesBuilder()
+			.setValuesSeparator('/')
+			.trimMultiValues(true)
+			.put("myConcurrentMap", "A = true,200 / B = true,300 / C = false,500")
+			.build();
 		
-		InitProperties props = new InitProperties().put("myConcurrentMap", "A = true,200 / B = true,300 / C = false,500");
-		initializer.initialize(props, this);
+		new Initializer().addTypes(MySimpleType.class).addTypes(MyMultiType.class).initialize(prop, this);
+		
 		assertEquals(3, myConcurrentMap.size());
 	}
 	
 	@Test
 	public void testSimpleMap() {
 		
-		Initializer initializer = new Initializer().addTypes(MySimpleType.class).setValuesSeparator('/').trimMultiValues(true);
-		InitProperties props = new InitProperties().put("mySimpleMap", "A = true,200 / B = true,300 / C = false,500");
-		initializer.initialize(props, this);
+		InitProperties prop = 
+				new InitPropertiesBuilder()
+				.setValuesSeparator('/')
+				.trimMultiValues(true)
+				.put("mySimpleMap", "A = true,200 / B = true,300 / C = false,500")
+				.build();
+		
+		new Initializer().addTypes(MySimpleType.class).initialize(prop, this);
+		
 		assertEquals(3, mySimpleMap.size());
 	}
 	
@@ -162,18 +176,21 @@ public class CustomTypesTest {
 		
 		MySimple[] correct = new MySimple[]{new MySimple(true, 200),new MySimple(true, 300),new MySimple(false, 500)};
 		
-		Initializer initializer = new Initializer().addTypes(MySimpleType.class).setValuesSeparator('/');
-		InitProperties props = new InitProperties().put("mySimpleArray", "true,200/true,300/false,500");
-		initializer.initialize(props, this);
+		InitProperties prop = 
+			new InitPropertiesBuilder().setValuesSeparator('/').put("mySimpleArray", "true,200/true,300/false,500").build();
+		
+		new Initializer().addTypes(MySimpleType.class).initialize(prop, this);
+		
 		assertArrayEquals(correct, mySimpleArray);
 	}
 	
 	@Test
 	public void testSimpleClass() {
+			
+		InitProperties prop = new InitPropertiesBuilder().put("mySimple", "true,200").build();
 		
-		Initializer initializer = new Initializer().addTypes(MySimpleType.class);
-		InitProperties props = new InitProperties().put("mySimple", "true,200");
-		initializer.initialize(props, this);
+		new Initializer().addTypes(MySimpleType.class).initialize(prop, this);
+		
 		assertEquals("true|200", mySimple.toString());
 	}
 	
@@ -182,9 +199,8 @@ public class CustomTypesTest {
 		
 		MySimpleType mySimpleType = new MySimpleType();
 		
-		Initializer initializer = new Initializer().addTypes(mySimpleType);
-		InitProperties props = new InitProperties().put("mySimple", "true,200");
-		initializer.initialize(props, this);
+		InitProperties props = new InitPropertiesBuilder().put("mySimple", "true,200").build();
+		new Initializer().addTypes(mySimpleType).initialize(props, this);
 		assertEquals("true|200", mySimple.toString());
 	}
 }

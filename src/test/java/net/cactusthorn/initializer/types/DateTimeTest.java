@@ -12,20 +12,20 @@ package net.cactusthorn.initializer.types;
 
 import static org.junit.Assert.*;
 
-import java.util.Calendar;
+import java.util.*;
 
 import org.junit.Test;
 
 import static net.cactusthorn.initializer.annotations.InitPropertyPolicy.OPTIONAL;
 import net.cactusthorn.initializer.Initializer;
 import net.cactusthorn.initializer.InitializerException;
-import net.cactusthorn.initializer.InitProperties;
+import net.cactusthorn.initializer.InitPropertiesBuilder;
 import net.cactusthorn.initializer.annotations.*;
 
 public class DateTimeTest {
 	
 	Initializer initializer = new Initializer();
-	InitProperties bundle = new InitProperties();
+	InitPropertiesBuilder pb = new InitPropertiesBuilder();
 	
 	java.util.Calendar currentCalendar = Calendar.getInstance(); 
 	java.util.Date currentUtilDate = currentCalendar.getTime();
@@ -43,42 +43,33 @@ public class DateTimeTest {
 	@Test
 	public void testCustomFormat() {
 		
-		Initializer local = 
-			new Initializer().addDateTimeFormatPattern("dd.MM.yyyy");
-		
-		bundle.clear().put("date", "21.12.1976");
-		local.initialize(bundle, this);
+		new Initializer().initialize(pb.addDateTimeFormatPattern("dd.MM.yyyy").put("date", "21.12.1976").build(), this);
 		assertNotNull(date);
 	}
 	
 	@Test(expected = InitializerException.class)
 	public void testUtilDateException() {
 		
-		bundle.clear().put("date", "21.12.1976");
-		initializer.initialize(bundle, this);
+		initializer.initialize(pb.put("date", "21.12.1976").build(), this);
 	}
 	
 	@Test
 	public void testCalendar() {
 		
-		bundle.clear().put("calendar", "2017-09-17T11:16:50+01:00");
-		initializer.initialize(bundle, this);
+		initializer.initialize(pb.put("calendar", "2017-09-17T11:16:50+01:00").build(), this);
 		assertNotNull(calendar);
 		
 		calendar = null;
-		bundle.put("calendar", "2017-09-17T11:16:50");
-		initializer.initialize(bundle, this);
+		initializer.initialize(pb.put("calendar", "2017-09-17T11:16:50").build(), this);
 		assertNotNull(calendar);
 		
 		calendar = null;
-		bundle.put("calendar", "2017-10-05");
-		initializer.initialize(bundle, this);
+		initializer.initialize(pb.put("calendar", "2017-10-05").build(), this);
 		assertNotNull(calendar);
 		
 		calendar = currentCalendar;
 		
-		bundle.put("calendar", "");
-		initializer.initialize(bundle, this);
+		initializer.initialize(pb.put("calendar", "").build(), this);
 		assertNull(calendar);
 	}
 	
@@ -86,52 +77,44 @@ public class DateTimeTest {
 	@Test
 	public void testSqlDate() {
 		
-		bundle.clear().put("sqldate", "2017-09-17T11:16:50+01:00");
-		initializer.initialize(bundle, this);
+		initializer.initialize(pb.put("sqldate", "2017-09-17T11:16:50+01:00").build(), this);
 		assertNotNull(sqldate);
 		
 		sqldate = null;
 		
-		bundle.put("sqldate", "2017-09-17T11:16:50");
-		initializer.initialize(bundle, this);
+		initializer.initialize(pb.put("sqldate", "2017-09-17T11:16:50").build(), this);
 		assertNotNull(sqldate);
 		
 		sqldate = null;
 		
-		bundle.put("sqldate", "2017-10-05");
-		initializer.initialize(bundle, this);
+		initializer.initialize(pb.put("sqldate", "2017-09-17T11:16:50").build(), this);
 		assertNotNull(sqldate);
 		
 		sqldate = currentSqlDate;
 		
-		bundle.put("sqldate", "");
-		initializer.initialize(bundle, this);
+		initializer.initialize(pb.put("sqldate", "").build(), this);
 		assertNull(sqldate);
 	}
 
 	@Test
 	public void testUtilDate() {
 		
-		bundle.clear().put("date", "2017-09-17T11:16:50+01:00");
-		initializer.initialize(bundle, this);
+		initializer.initialize(pb.put("date", "2017-09-17T11:16:50+01:00").build(), this);
 		assertNotNull(date);
 		
 		date = null;
 		
-		bundle.put("date", "2017-09-17T11:16:50");
-		initializer.initialize(bundle, this);
+		initializer.initialize(pb.put("date", "2017-09-17T11:16:50").build(), this);
 		assertNotNull(date);
 		
 		date = null;
 		
-		bundle.put("date", "2017-10-05");
-		initializer.initialize(bundle, this);
+		initializer.initialize(pb.put("date", "2017-10-05").build(), this);
 		assertNotNull(date);
 		
 		date = currentUtilDate;
 		
-		bundle.put("date", "");
-		initializer.initialize(bundle, this);
+		initializer.initialize(pb.put("date", "").build(), this);
 		assertNull(date);
 	}
 

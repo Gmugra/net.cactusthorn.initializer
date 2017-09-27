@@ -20,12 +20,6 @@ import static net.cactusthorn.initializer.annotations.InitPropertyPolicy.*;
 
 public final class Initializer {
 	
-	private char valuesSep = ',';
-	private char pairSep = '=';
-	private boolean trimMultiValues;
-	
-	private Set<String> additionalDateTimeFormatPatterns = new HashSet<>();
-	
 	private Map<String, ITypes> types = new HashMap<>();
 	
 	public Initializer() {
@@ -64,11 +58,6 @@ public final class Initializer {
 				throw new InitializerException(null, e);
 			}
 			
-			for (String pattern : additionalDateTimeFormatPatterns) {
-				$types.addDateTimeFormatPattern(pattern);
-			}
-			$types.setValuesSeparator(valuesSep).setPairSeparator(pairSep).trimMultiValues(trimMultiValues);
-			
 			this.types.put(name, $types);
 		}
 		return this;
@@ -80,31 +69,8 @@ public final class Initializer {
 		if (!this.types.containsKey(name) ) {
 			
 			ITypes cloned = types.clone();	
-			additionalDateTimeFormatPatterns.forEach(p -> cloned.addDateTimeFormatPattern(p));
-			cloned.setValuesSeparator(valuesSep).setPairSeparator(pairSep).trimMultiValues(trimMultiValues);
 			this.types.put(name, cloned);
 		}
-		return this;
-	}
-	
-	public Initializer addDateTimeFormatPattern(String formatPattern) {
-		
-		additionalDateTimeFormatPatterns.add(formatPattern);
-		return this;
-	}
-	
-	public Initializer setValuesSeparator(char separator) {
-		this.valuesSep = separator;
-		return this;
-	}
-	
-	public Initializer setPairSeparator(char separator) {
-		this.pairSep = separator;
-		return this;
-	}
-	
-	public Initializer trimMultiValues(boolean trimMultiValues) {
-		this.trimMultiValues = trimMultiValues;
 		return this;
 	}
 
@@ -123,31 +89,12 @@ public final class Initializer {
 			return;
 		}
 		
-		//to be thread safe
-		List<ITypes> availableInitializers = cloneTypes();
-		
 		for (Object object : objects) {
-			initialize(availableInitializers, configBundle, object);
+			initialize(types.values(), configBundle, object);
 		}
 	}
 	
-	private List<ITypes> cloneTypes() {
-		
-		List<ITypes> clonedTypes = new ArrayList<>();
-		for (ITypes type : types.values() ) {
-			try {
-				ITypes cloned = type.clone();
-				additionalDateTimeFormatPatterns.forEach(p -> cloned.addDateTimeFormatPattern(p));
-				cloned.setValuesSeparator(valuesSep).setPairSeparator(pairSep).trimMultiValues(trimMultiValues);
-				clonedTypes.add(cloned);
-			} catch (CloneNotSupportedException e) {
-				// ???
-			}
-		}
-		return clonedTypes;
-	}
-	
-	private void initialize(List<ITypes> availableTypes, InitProperties initProperties, Object object) {
+	private void initialize(Collection<ITypes> availableTypes, InitProperties initProperties, Object object) {
 		
 		Class<?> clazz = object.getClass();
 		
@@ -188,7 +135,8 @@ public final class Initializer {
 				continue;
 			}
 			
-			if (!availableTypes.stream().anyMatch(t -> t.setObject(object, field, info, propertyValue, availableTypes) ) ) {
+			if (!availableTypes.stream()
+					.anyMatch(t -> t.setObject(object, field, info, propertyValue, initProperties, availableTypes) ) ) {
 				
 				throw new InitializerException(info, StandardError.UNSUPPORTED_TYPE);
 			}

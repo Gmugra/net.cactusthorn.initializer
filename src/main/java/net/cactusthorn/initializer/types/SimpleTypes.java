@@ -13,8 +13,9 @@ package net.cactusthorn.initializer.types;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.List;
+import java.util.Collection;
 
+import net.cactusthorn.initializer.InitProperties;
 import net.cactusthorn.initializer.InitializerException;
 import net.cactusthorn.initializer.annotations.Info;
 import static net.cactusthorn.initializer.InitializerException.StandardError.*;
@@ -27,7 +28,13 @@ public class SimpleTypes implements ITypes {
 	}
 
 	@Override
-	public Value<?> createObject(Class<?> fieldType, Type fieldGenericType, Info info, String propertyValue, List<ITypes> availableTypes) throws InitializerException {
+	public Value<?> createObject(
+		Class<?> fieldType, 
+		Type fieldGenericType,
+		Info info, 
+		String propertyValue, 
+		InitProperties initProperties, 
+		Collection<ITypes> availableTypes) throws InitializerException {
 		
 		boolean empty = propertyValue.isEmpty();
 		

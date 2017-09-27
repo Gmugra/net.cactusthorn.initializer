@@ -11,63 +11,50 @@
 package net.cactusthorn.initializer.types;
 
 import java.lang.reflect.Type;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.List;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.Collection;
 
-
+import net.cactusthorn.initializer.InitProperties;
 import net.cactusthorn.initializer.InitializerException;
 import net.cactusthorn.initializer.annotations.Info;
 import static net.cactusthorn.initializer.InitializerException.StandardError.*;
 
 public class DateTimeTypes implements ITypes {
 	
-	private static final String DATE_TIME_TZ = "yyyy-MM-dd'T'HH:mm:ssXXX";
-	private static final String DATE_TIME = "yyyy-MM-dd'T'HH:mm:ss";
-	private static final String DATE = "yyyy-MM-dd";
-	
-	private Map<String, SimpleDateFormat> formats = new HashMap<>();
-	
-	public DateTimeTypes() {
-		formats.put(DATE_TIME_TZ, new SimpleDateFormat(DATE_TIME_TZ));
-		formats.put(DATE_TIME, new SimpleDateFormat(DATE_TIME));
-		formats.put(DATE, new SimpleDateFormat(DATE));
-	}
-	
 	@Override
 	public DateTimeTypes clone() throws CloneNotSupportedException {
 		
-		DateTimeTypes cloned = (DateTimeTypes)super.clone();
-		
-		Map<String, SimpleDateFormat> newFormats = new HashMap<>();
-		formats.entrySet().forEach(e -> newFormats.put(e.getKey(), (SimpleDateFormat)e.getValue().clone()));
-		cloned.formats = newFormats;
-		
-		return cloned;
+		return (DateTimeTypes)super.clone();
 	}
 	
 	@Override
-	public ITypes addDateTimeFormatPattern(String formatPattern) {	
-		if (!formats.containsKey(formatPattern) ) {
-			formats.put(formatPattern, new SimpleDateFormat(formatPattern));
-		}
-		return this;
-	}
-	
-	@Override
-	public Value<?> createObject(Class<?> fieldType, Type fieldGenericType, Info info, String propertyValue, List<ITypes> availableTypes) throws InitializerException {
+	public Value<?> createObject(
+		Class<?> fieldType, 
+		Type fieldGenericType,
+		Info info, 
+		String propertyValue, 
+		InitProperties initProperties, 
+		Collection<ITypes> availableTypes) throws InitializerException {
 		
 		boolean empty = propertyValue.isEmpty();
 		
 		if (java.util.Date.class.equals(fieldType) ) {
 
-			return Value.of(empty ? null : createDate(info, propertyValue));
+			DateTimeFormatter formatter = initProperties.getDateTimeFormatter();
+			
+			return Value.of(empty ? null : getJavaUtilDate(info, propertyValue, formatter) );
 		}
 		if (java.sql.Date.class.equals(fieldType) ) {
 			
-			return Value.of(empty ? null : new java.sql.Date(createDate(info, propertyValue).getTime() ) );
+			DateTimeFormatter formatter = initProperties.getDateTimeFormatter();
+			
+			return Value.of(empty ? null : 
+				new java.sql.Date(getJavaUtilDate(info, propertyValue, formatter).getTime() ) );
 		}
 		if (java.util.Calendar.class.equals(fieldType) ) {
 			
@@ -75,9 +62,10 @@ public class DateTimeTypes implements ITypes {
 				return Value._null();
 			}
 			
-			java.util.Date date = createDate(info, propertyValue);
+			DateTimeFormatter formatter = initProperties.getDateTimeFormatter();
+			
 			java.util.Calendar calendar = java.util.Calendar.getInstance();
-			calendar.setTime(date);
+			calendar.setTime(getJavaUtilDate(info, propertyValue, formatter) );
 			
 			return Value.of(calendar);
 		}
@@ -85,19 +73,24 @@ public class DateTimeTypes implements ITypes {
 		return Value.empty();
 	}
 	
-	private java.util.Date createDate(Info info, String configurationValue ) throws InitializerException {
+	private java.util.Date getJavaUtilDate(Info info, String propertyValue, DateTimeFormatter formatter ) throws InitializerException {
+		return java.sql.Date.from(getInstant(info, propertyValue, formatter ) );
+	}
 		
-		java.util.Date date = null;
-
-		for (SimpleDateFormat f : formats.values() ) {
+	private Instant getInstant(Info info, String propertyValue, DateTimeFormatter formatter ) throws InitializerException {
+		
+		try {
+			
+			return ZonedDateTime.parse(propertyValue, formatter).toInstant();
+		} catch (DateTimeParseException ze ) {
+			
 			try {
-				date = f.parse(configurationValue);
-				return date;	
-			} catch (ParseException pe ) {
-				continue;
+				
+				return LocalDateTime.parse(propertyValue, formatter).atZone(ZoneId.systemDefault()).toInstant();
+			} catch (DateTimeParseException le ) {
+				
+				throw new InitializerException(info, UNPARSEABLE_DATETIME); 
 			}
 		}
-		
-		throw new InitializerException(info, UNPARSEABLE_DATETIME); 
 	}
 }

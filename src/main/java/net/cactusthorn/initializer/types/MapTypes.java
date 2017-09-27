@@ -16,6 +16,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
 
+import net.cactusthorn.initializer.InitProperties;
 import net.cactusthorn.initializer.InitializerException;
 import net.cactusthorn.initializer.annotations.Info;
 
@@ -68,7 +69,13 @@ public class MapTypes extends MultiValueTypes {
 	}
 	
 	@Override
-	public Value<?> createObject(Class<?> fieldType, Type fieldGenericType, Info info, String propertyValue, List<ITypes> availableTypes) throws InitializerException {
+	public Value<?> createObject(
+		Class<?> fieldType, 
+		Type fieldGenericType,
+		Info info, 
+		String propertyValue, 
+		InitProperties initProperties, 
+		Collection<ITypes> availableTypes) throws InitializerException {
 		
 		if (availableTypes == null || availableTypes.isEmpty() || fieldGenericType == null) {
 			return Value.empty();
@@ -101,7 +108,7 @@ public class MapTypes extends MultiValueTypes {
 			return Value.empty();
 		}
 		
-		List<StringsPair> pairs = splitPairs(propertyValue);
+		List<StringsPair> pairs = initProperties.getSplitter().splitPairs(propertyValue);
 		
 		Map<Object,Object> newMap = null;
 		try {
@@ -115,12 +122,12 @@ public class MapTypes extends MultiValueTypes {
 			return Value.of(newMap);
 		}
 		
-		TypeValue keyTypeValue = findType(info, pairs.get(0).key(), keyClass, availableTypes);
+		TypeValue keyTypeValue = findType(info, pairs.get(0).key(), keyClass, initProperties, availableTypes);
 		if (keyTypeValue == null) {
 			return Value.empty();
 		}
 		
-		TypeValue valueTypeValue = findType(info, pairs.get(0).value(), valueClass, availableTypes);
+		TypeValue valueTypeValue = findType(info, pairs.get(0).value(), valueClass, initProperties, availableTypes);
 		if (valueTypeValue == null) {
 			return Value.empty();
 		}
@@ -128,8 +135,8 @@ public class MapTypes extends MultiValueTypes {
 		newMap.put(keyTypeValue.value.get(), valueTypeValue.value.get());
 		
 		for (int i = 1; i < pairs.size(); i++ ) {
-			Value<?> key = get(keyTypeValue.type, info, pairs.get(i).key(), keyClass);
-			Value<?> value = get(valueTypeValue.type, info, pairs.get(i).value(), valueClass);
+			Value<?> key = get(keyTypeValue.type, info, pairs.get(i).key(), keyClass, initProperties);
+			Value<?> value = get(valueTypeValue.type, info, pairs.get(i).value(), valueClass, initProperties);
 			newMap.put(key.get(), value.get());
 		}
 		

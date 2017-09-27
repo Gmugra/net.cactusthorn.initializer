@@ -44,7 +44,9 @@ public class BeanTest {
 		
 		Path path = Paths.get(getClass().getClassLoader().getResource("init-bean.properties").toURI());
 		
-		new Initializer().trimMultiValues(true).initialize(InitProperties.load(path), this);
+		InitProperties prop = new InitPropertiesBuilder().load(path).trimMultiValues(true).build();
+		
+		new Initializer().initialize(prop, this);
 		
 		assertEquals("Super Name", testBean.subTestBean.name);
 		assertEquals(9, testBean.subTestBean.values.length);

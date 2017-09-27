@@ -13,6 +13,7 @@ package net.cactusthorn.initializer.types;
 import java.util.*;
 import java.lang.reflect.*;
 
+import net.cactusthorn.initializer.InitProperties;
 import net.cactusthorn.initializer.InitializerException;
 import net.cactusthorn.initializer.annotations.Info;
 
@@ -69,7 +70,13 @@ public class ListSetTypes extends MultiValueTypes {
 	}
 	
 	@Override
-	public Value<?> createObject(Class<?> fieldType, Type fieldGenericType, Info info, String propertyValue, List<ITypes> availableTypes) throws InitializerException {
+	public Value<?> createObject(
+		Class<?> fieldType, 
+		Type fieldGenericType,
+		Info info, 
+		String propertyValue, 
+		InitProperties initProperties, 
+		Collection<ITypes> availableTypes) throws InitializerException {
 		
 		if (availableTypes == null || availableTypes.isEmpty() || fieldGenericType == null) {
 			return Value.empty();
@@ -97,9 +104,9 @@ public class ListSetTypes extends MultiValueTypes {
 			return Value.empty();
 		}
 		
-		List<String> valueParts = split(propertyValue);
+		List<String> valueParts = initProperties.getSplitter().split(propertyValue);
 		
-		TypeValue typeValue = findType(info, valueParts.get(0), collectionClass, availableTypes);
+		TypeValue typeValue = findType(info, valueParts.get(0), collectionClass, initProperties, availableTypes);
 		if (typeValue == null) {
 			return Value.empty();
 		}
@@ -119,7 +126,7 @@ public class ListSetTypes extends MultiValueTypes {
 		newCollection.add(typeValue.value.get() );
 		
 		for (int i = 1; i < valueParts.size(); i++ ) {
-			Value<?> value = get(typeValue.type, info, valueParts.get(i), collectionClass);
+			Value<?> value = get(typeValue.type, info, valueParts.get(i), collectionClass, initProperties);
 			newCollection.add(value.get() );
 		}
 		

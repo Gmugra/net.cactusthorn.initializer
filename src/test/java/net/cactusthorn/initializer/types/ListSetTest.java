@@ -19,17 +19,18 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import net.cactusthorn.initializer.InitProperties;
+import net.cactusthorn.initializer.InitPropertiesBuilder;
 import net.cactusthorn.initializer.Initializer;
 import net.cactusthorn.initializer.annotations.InitProperty;
 import static net.cactusthorn.initializer.annotations.InitPropertyPolicy.*;
 
 public class ListSetTest {
 
+	InitPropertiesBuilder pb = new InitPropertiesBuilder();
+	
 	static SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd");
 	
 	Initializer initializer = new Initializer();
-	InitProperties bundle = new InitProperties();
 	
 	@InitProperty
 	ArrayList<String> arrayList;
@@ -70,24 +71,21 @@ public class ListSetTest {
 	@Test
 	public void testAllowedEmpty() throws ParseException {
 		
-		bundle.clear().put("dateset", "");
-		initializer.initialize(bundle, this);
+		initializer.initialize(pb.put("dateset", "").build(), this);
 		assertEquals(0,dateset.size());
 	}
 	
 	@Test
 	public void testDateSet() throws ParseException {
-		
-		bundle.clear().put("dateset", "2017-10-10,2017-03-08,2017-11-15");
-		initializer.initialize(bundle, this);
+
+		initializer.initialize(pb.put("dateset", "2017-10-10,2017-03-08,2017-11-15").build(), this);
 		assertEquals(3,dateset.size());
 	}
 	
 	@Test
 	public void testLinkedHashSet() {
 		
-		bundle.clear().put("linkedHashSet", "a,b,c,c,d").put("xxxx", "ddd");
-		initializer.initialize(bundle, this);
+		initializer.initialize(pb.put("linkedHashSet", "a,b,c,c,d").put("xxxx", "ddd").build(), this);
 		assertThat(linkedHashSet, hasItems("a","b","c","d"));
 		assertEquals(4,linkedHashSet.size());
 	}
@@ -95,8 +93,7 @@ public class ListSetTest {
 	@Test
 	public void testAbstractSet() {
 		
-		bundle.clear().put("abstractSet", "a,b,c,c,d");
-		initializer.initialize(bundle, this);
+		initializer.initialize(pb.put("abstractSet", "a,b,c,c,d").build(), this);
 		assertThat(abstractSet, hasItems("a","b","c","d"));
 		assertEquals(4,abstractSet.size());
 	}
@@ -104,8 +101,7 @@ public class ListSetTest {
 	@Test
 	public void testTreeSet() {
 		
-		bundle.clear().put("treeSet", "a,b,c,c,d");
-		initializer.initialize(bundle, this);
+		initializer.initialize(pb.put("treeSet", "a,b,c,c,d").build(), this);
 		assertThat(treeSet, hasItems("a","b","c","d"));
 		assertEquals(4,treeSet.size());
 	}
@@ -113,49 +109,43 @@ public class ListSetTest {
 	@Test
 	public void testHashSet() {
 		
-		bundle.clear().put("hashSet", "a,b,c,c,d");
-		initializer.initialize(bundle, this);
+		initializer.initialize(pb.put("hashSet", "a,b,c,c,d").build(), this);
 		assertThat(hashSet, hasItems("a","b","c","d"));
 		assertEquals(4,hashSet.size());
 	}
 	
 	@Test
 	public void testLinkedList() {
-		
-		bundle.clear().put("linkedList", "a,b,c,d");
-		initializer.initialize(bundle, this);
+
+		initializer.initialize(pb.put("linkedList", "a,b,c,d").build(), this);
 		assertThat(linkedList, hasItems("a","b","c","d"));
 	}
 	
 	@Test
 	public void testAbstractSequentialList() {
 
-		bundle.clear().put("abstractSequentialList", "a,b,c,d");
-		initializer.initialize(bundle, this);
+		initializer.initialize(pb.put("abstractSequentialList", "a,b,c,d").build(), this);
 		assertEquals(4,abstractSequentialList.size());
 	}
 	
 	@Test
 	public void testAbstractList() {
 
-		bundle.clear().put("abstractList", "a,b,c,d");
-		initializer.initialize(bundle, this);
+		initializer.initialize(pb.put("abstractList", "a,b,c,d").build(), this);
 		assertEquals(4,abstractList.size());
 	}
 	
 	@Test
 	public void testArrayList() {
 
-		bundle.clear().put("arrayList", "a,b,c,d");
-		initializer.initialize(bundle, this);
+		initializer.initialize(pb.put("arrayList", "a,b,c,d").build(), this);
 		assertThat(arrayList, hasItems("a","b","c","d"));
 	}
 	
 	@Test
 	public void testList() {
 
-		bundle.clear().put("list", "a,b,c,d,d,d");
-		initializer.initialize(bundle, this);
+		initializer.initialize(pb.put("list", "a,b,c,d,d,d").build(), this);
 		assertThat(list, hasItems("a","b","c","d"));
 		assertEquals(6,list.size());
 	}
@@ -163,8 +153,7 @@ public class ListSetTest {
 	@Test
 	public void testSortedSet() {
 
-		bundle.clear().put("sortedSet", "a,b,c,d,d,d");
-		initializer.initialize(bundle, this);
+		initializer.initialize(pb.put("sortedSet", "a,b,c,d,d,d").build(), this);
 		assertThat(sortedSet, hasItems("a","b","c","d"));
 		assertEquals(4,sortedSet.size());
 	}
@@ -172,8 +161,7 @@ public class ListSetTest {
 	@Test
 	public void testSet() {
 
-		bundle.clear().put("set", "a,b,c,d,d,d");
-		initializer.initialize(bundle, this);
+		initializer.initialize(pb.put("set", "a,b,c,d,d,d").build(), this);
 		assertThat(set, hasItems("a","b","c","d"));
 		assertEquals(4,set.size());
 	}

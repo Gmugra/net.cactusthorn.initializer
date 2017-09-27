@@ -8,38 +8,24 @@
  * 
  * http://opensource.org/licenses/BSD-2-Clause
  ******************************************************************************/
-package net.cactusthorn.initializer.types;
+package net.cactusthorn.initializer;
 
 import static org.junit.Assert.*;
 
-import java.lang.reflect.Type;
 import java.util.List;
-
-import net.cactusthorn.initializer.InitializerException;
-import net.cactusthorn.initializer.annotations.Info;
-import net.cactusthorn.initializer.types.ITypes;
-import net.cactusthorn.initializer.types.MultiValueTypes;
-import net.cactusthorn.initializer.types.Value;
+import net.cactusthorn.initializer.types.StringsPair;
 
 import org.junit.Test;
 
 public class SplitTest {
 
-	MultiValueTypes splitTypes  
-		= new MultiValueTypes() {
-			@Override
-			public Value<?> createObject(Class<?> fieldType, Type fieldGenericType, Info info, String configurationValue,
-					List<ITypes> availableSimpleInitializers) throws InitializerException {
-				
-				return Value.empty();
-			}
-		};
-
+	Splitter splitter = new Splitter(',','=',false);
+	
 	@Test
 	public void testPairMultiEquals() {
 		
 		String correct = "[{aa:}, {bb:20}, {cc:}, {xxx:345}]";
-		List<StringsPair> result = splitTypes.splitPairs("aa====bb,bb=20,cc==we\\,er,xxx=345"); 
+		List<StringsPair> result = splitter.splitPairs("aa====bb,bb=20,cc==we\\,er,xxx=345"); 
 		//System.out.println(result);
 		assertEquals(correct, result.toString());
 	}
@@ -48,7 +34,7 @@ public class SplitTest {
 	public void testPairSimpleEscaping() {
 		
 		String correct = "[{aa=bb:cc}, {bb:20}, {cc:we,er}, {xxx:345}]";
-		List<StringsPair> result = splitTypes.splitPairs("aa\\=bb=cc,bb=20,cc=we\\,er,xxx=345"); 
+		List<StringsPair> result = splitter.splitPairs("aa\\=bb=cc,bb=20,cc=we\\,er,xxx=345"); 
 		assertEquals(correct, result.toString());
 	}
 		
@@ -56,7 +42,7 @@ public class SplitTest {
 	public void testSimplePair() {
 		
 		String correct = "[{aa:10}, {bb:20}, {cc:weer}, {xxx:345}]";
-		List<StringsPair> result = splitTypes.splitPairs("aa=10,bb=20,cc=weer,xxx=345"); 
+		List<StringsPair> result = splitter.splitPairs("aa=10,bb=20,cc=weer,xxx=345"); 
 		assertEquals(correct, result.toString());
 	}
 		
@@ -64,7 +50,7 @@ public class SplitTest {
 	public void testEmpty() {
 		
 		String[] correct = new String[]{""};
-		List<String> result = splitTypes.split(""); 
+		List<String> result = splitter.split(""); 
 		assertArrayEquals(correct, result.toArray());
 	}
 		
@@ -72,7 +58,7 @@ public class SplitTest {
 	public void testSimple() {
 	
 		String[] correct = new String[]{"abc","drf","dft","gfff"};
-		List<String> result = splitTypes.split("abc,drf,dft,gfff"); 
+		List<String> result = splitter.split("abc,drf,dft,gfff"); 
 		assertArrayEquals(correct, result.toArray());
 	}
 	
@@ -80,7 +66,7 @@ public class SplitTest {
 	public void testEscape() {
 	
 		String[] correct = new String[]{"abc,drf","dft","gfff"};
-		List<String> result = splitTypes.split("abc\\,drf,dft,gfff"); 
+		List<String> result = splitter.split("abc\\,drf,dft,gfff"); 
 		//System.out.println(Arrays.asList(result));
 		assertArrayEquals(correct, result.toArray());
 	}
@@ -89,7 +75,7 @@ public class SplitTest {
 	public void testEscapeSlash() {
 		
 		String[] correct = new String[]{"abc\\","drf","dft,gfff"};
-		List<String> result = splitTypes.split("abc\\\\,drf,dft\\,gfff");
+		List<String> result = splitter.split("abc\\\\,drf,dft\\,gfff");
 		//System.out.println(Arrays.asList(result));
 		assertArrayEquals(correct, result.toArray());
 	}
@@ -98,7 +84,7 @@ public class SplitTest {
 	public void testMegaSlash() {
 		
 		String[] correct = new String[]{"\\\\","\\"};
-		List<String> result = splitTypes.split("\\\\\\\\,\\\\"); 
+		List<String> result = splitter.split("\\\\\\\\,\\\\"); 
 		assertArrayEquals(correct, result.toArray());
 	}
 
@@ -106,7 +92,7 @@ public class SplitTest {
 	public void testComma() {
 		
 		String[] correct = new String[]{"",""};
-		List<String> result = splitTypes.split(","); 
+		List<String> result = splitter.split(","); 
 		assertArrayEquals(correct, result.toArray());
 	}
 	
@@ -114,7 +100,7 @@ public class SplitTest {
 	public void testMegaComma() {
 		
 		String[] correct = new String[]{"ABC","","","DEF",""};
-		List<String> result = splitTypes.split("ABC,,,DEF,"); 
+		List<String> result = splitter.split("ABC,,,DEF,"); 
 		assertArrayEquals(correct, result.toArray());
 	}
 	
@@ -122,7 +108,7 @@ public class SplitTest {
 	public void testSingle() {
 		
 		String[] correct = new String[]{"ABC"};
-		List<String> result = splitTypes.split("ABC");
+		List<String> result = splitter.split("ABC");
 		assertArrayEquals(correct, result.toArray());
 	}
 }
