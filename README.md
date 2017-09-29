@@ -268,14 +268,16 @@ public class CustomTypesTest {
 ```
 
 ## What it can initialize for the moment?
-* all primitive and simple object types, StringBuffer, StringBuilder, BigDecimal, BigInteger, java.util.Date, java.sql.Date, java.util.Calendar  
+* all primitive and simple types, StringBuffer, StringBuilder, BigDecimal, BigInteger, 
+* date/time: java.util.Date, java.sql.Date, java.util.Calendar, java.time.LocalDateTime, java.time.ZonedDateTime 
 * one-dimensional arrays of any type which described above
 * Collections with generic of any types which described above
 * Maps with generic of any types which described above as key or value
-* customizing date/time patterns
-* requirements policies for properties
-* naming -> @InitPropertyName
 * recursive beans initialization -> @InitBean
+* customizing date/time patterns
+* requirements policies
+* thread safe
+* naming -> @InitPropertyName
 * initializaton by environment variables -> @InitEnvVariable 
 * extendable for support new types, and new type will work with array, beans and coollection
 * Check unit tests - a lot of examples there
