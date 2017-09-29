@@ -12,6 +12,8 @@ package net.cactusthorn.initializer.types;
 
 import static org.junit.Assert.*;
 
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.*;
 
 import org.junit.Test;
@@ -39,6 +41,38 @@ public class DateTimeTest {
 	
 	@InitProperty(OPTIONAL)
 	java.util.Calendar calendar;
+	
+	@InitProperty
+	LocalDateTime local;
+	
+	@InitProperty
+	ZonedDateTime zoned;
+	
+	@Test(expected = InitializerException.class)
+	public void testZonedDateTimeException() {
+		
+		new Initializer().initialize(pb.put("zoned", "2017-09-17T11:16:50").build(), this);
+	}
+
+	@Test
+	public void testZonedDateTime() {
+		
+		new Initializer().initialize(pb.put("zoned", "2017-09-17T11:16:50+01:00").build(), this);
+		assertEquals("2017-09-17T11:16:50+01:00", zoned.toString());
+	}
+	
+	@Test(expected = InitializerException.class)
+	public void testLocalDateTimeException() {
+		
+		new Initializer().initialize(pb.put("local", "21.12.1976").build(), this);
+	}
+	
+	@Test
+	public void testLocalDateTime() {
+		
+		new Initializer().initialize(pb.put("local", "2017-09-17T11:16:50").build(), this);
+		assertEquals("2017-09-17T11:16:50", local.toString());
+	}
 	
 	@Test
 	public void testCustomFormat() {

@@ -43,16 +43,21 @@ public class DateTimeTypes implements ITypes {
 		Collection<ITypes> availableTypes) throws InitializerException {
 		
 		boolean empty = propertyValue.isEmpty();
+		DateTimeFormatter formatter = initProperties.getDateTimeFormatter();
 		
 		if (java.util.Date.class.equals(fieldType) ) {
 
-			DateTimeFormatter formatter = initProperties.getDateTimeFormatter();
-			
 			return Value.of(empty ? null : getJavaUtilDate(info, propertyValue, formatter) );
 		}
-		if (java.sql.Date.class.equals(fieldType) ) {
+		if (LocalDateTime.class.equals(fieldType) ) {
 			
-			DateTimeFormatter formatter = initProperties.getDateTimeFormatter();
+			return Value.of(empty ? null : getLocalDateTime(info, propertyValue, formatter) );
+		}
+		if (ZonedDateTime.class.equals(fieldType) ) {
+			
+			return Value.of(empty ? null : getZonedDateTime(info, propertyValue, formatter) );
+		}
+		if (java.sql.Date.class.equals(fieldType) ) {
 			
 			return Value.of(empty ? null : 
 				new java.sql.Date(getJavaUtilDate(info, propertyValue, formatter).getTime() ) );
@@ -62,8 +67,6 @@ public class DateTimeTypes implements ITypes {
 			if (empty) { 
 				return Value._null();
 			}
-			
-			DateTimeFormatter formatter = initProperties.getDateTimeFormatter();
 			
 			java.util.Calendar calendar = java.util.Calendar.getInstance();
 			calendar.setTime(getJavaUtilDate(info, propertyValue, formatter) );
@@ -77,21 +80,28 @@ public class DateTimeTypes implements ITypes {
 	private java.util.Date getJavaUtilDate(Info info, String propertyValue, DateTimeFormatter formatter ) throws InitializerException {
 		return java.sql.Date.from(getInstant(info, propertyValue, formatter ) );
 	}
+	
+	private ZonedDateTime getZonedDateTime(Info info, String propertyValue, DateTimeFormatter formatter ) throws InitializerException {
+		try {
+			return ZonedDateTime.parse(propertyValue, formatter);
+		} catch (DateTimeParseException e ) {
+			throw new InitializerException(info, UNPARSEABLE_DATETIME, e);
+		}
+	}
+	
+	private LocalDateTime getLocalDateTime(Info info, String propertyValue, DateTimeFormatter formatter ) throws InitializerException {
+		try {
+			return LocalDateTime.parse(propertyValue, formatter);
+		} catch (DateTimeParseException e ) {
+			throw new InitializerException(info, UNPARSEABLE_DATETIME, e);
+		}
+	}
 		
 	private Instant getInstant(Info info, String propertyValue, DateTimeFormatter formatter ) throws InitializerException {
-		
 		try {
-			
-			return ZonedDateTime.parse(propertyValue, formatter).toInstant();
-		} catch (DateTimeParseException ze ) {
-			
-			try {
-				
-				return LocalDateTime.parse(propertyValue, formatter).atZone(ZoneId.systemDefault()).toInstant();
-			} catch (DateTimeParseException le ) {
-				
-				throw new InitializerException(info, UNPARSEABLE_DATETIME); 
-			}
+			return getZonedDateTime(info, propertyValue, formatter).toInstant();
+		} catch (InitializerException ze ) {
+			return getLocalDateTime(info, propertyValue, formatter).atZone(ZoneId.systemDefault()).toInstant();
 		}
 	}
 }
