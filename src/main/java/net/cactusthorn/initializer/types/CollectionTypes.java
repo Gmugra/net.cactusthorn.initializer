@@ -59,7 +59,7 @@ public class CollectionTypes extends MultiValueTypes {
 			} else {
 				return null;
 			}
-		} else if ( !Modifier.isAbstract(fieldType.getModifiers() ) || Collection.class.isAssignableFrom(fieldType) ) {
+		} else if ( !Modifier.isAbstract(fieldType.getModifiers() ) && Collection.class.isAssignableFrom(fieldType) ) {
 			
 			clazz = fieldType;
 		} else {

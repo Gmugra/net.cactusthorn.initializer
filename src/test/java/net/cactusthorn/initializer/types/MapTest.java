@@ -13,6 +13,8 @@ package net.cactusthorn.initializer.types;
 import java.math.BigInteger;
 import java.text.ParseException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -23,7 +25,6 @@ import net.cactusthorn.initializer.annotations.*;
 import net.cactusthorn.initializer.properties.InitPropertiesBuilder;
 
 import static net.cactusthorn.initializer.InitializerException.StandardError.*;
-import static net.cactusthorn.initializer.annotations.InitPropertyPolicy.*;
 
 public class MapTest {
 	
@@ -55,10 +56,18 @@ public class MapTest {
 
 	@InitProperty
 	HashMap<String,Boolean> hashMap;
-	
-	@InitProperty(OPTIONAL)
-	AbstractMap<String,Boolean> abstractMap;
 
+	@InitProperty
+	ConcurrentMap<String,String> cm;
+
+	@Test
+	public void testConcurrentMap() {
+		
+		new Initializer().initialize(pb.put("cm", "A=AA,B=>BB,C=CC").build(), this);
+		assertEquals(ConcurrentHashMap.class,cm.getClass());
+		assertEquals(3,cm.size());
+	}
+	
 	@Test
 	public void testNotAllowedEmpty() {
 		
@@ -68,20 +77,6 @@ public class MapTest {
 		} catch (InitializerException e ) {
 			assertEquals(NOT_EMPTY_PROPERTY,e.getStandardError());
 		}
-	}
-	
-	@Test
-	public void testEmptyMap() {
-		
-		new Initializer().initialize(pb.put("abstractMap", "").build(), this);
-		assertEquals(0,abstractMap.size());
-	}
-	
-	@Test
-	public void testAbstractMap() {
-		
-		new Initializer().initialize(pb.put("abstractMap", "A=true,B=true,C=true").build(), this);
-		assertEquals(3,abstractMap.size());
 	}
 	
 	@Test

@@ -12,9 +12,18 @@ package net.cactusthorn.initializer.types;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ConcurrentNavigableMap;
+import java.util.concurrent.ConcurrentSkipListMap;
+
+import javax.script.Bindings;
+import javax.script.SimpleBindings;
 
 import net.cactusthorn.initializer.InitializerException;
 import net.cactusthorn.initializer.annotations.Info;
@@ -33,7 +42,11 @@ public class MapTypes extends MultiValueTypes {
 		Class<?> clazz = null;
 		if (fieldType.isInterface() ) {
 			
-			if (NavigableMap.class.isAssignableFrom(fieldType) ) {
+			if (ConcurrentNavigableMap.class.isAssignableFrom(fieldType) )  {
+				clazz = ConcurrentSkipListMap.class;
+			} else if (ConcurrentMap.class.isAssignableFrom(fieldType) )  {
+				clazz = ConcurrentHashMap.class;
+			} else if (NavigableMap.class.isAssignableFrom(fieldType) ) {
 				clazz = TreeMap.class;
 			} else if (SortedMap.class.isAssignableFrom(fieldType) ) {
 				clazz = TreeMap.class;
@@ -42,23 +55,11 @@ public class MapTypes extends MultiValueTypes {
 			} else {
 				return null;
 			}
-		} else {
+		} else if ( !Modifier.isAbstract(fieldType.getModifiers() ) && Map.class.isAssignableFrom(fieldType) ) {
 			
-			if (TreeMap.class.equals(fieldType) ) {
-				clazz = TreeMap.class;
-			} else if (LinkedHashMap.class.equals(fieldType) ) {
-				clazz = LinkedHashMap.class;
-			} else if (IdentityHashMap.class.equals(fieldType) ) {
-				clazz = IdentityHashMap.class;
-			} else if (WeakHashMap.class.equals(fieldType) ) {
-				clazz = WeakHashMap.class;
-			} else if (HashMap.class.equals(fieldType) ) {
-				clazz = HashMap.class;
-			} else if (AbstractMap.class.equals(fieldType) ) {
-				clazz = HashMap.class;
-			} else {
-				return null;
-			}
+			clazz = fieldType;
+		} else {
+			return null;
 		}
 		
 		try {
