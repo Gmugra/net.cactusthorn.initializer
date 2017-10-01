@@ -85,23 +85,23 @@ import net.cactusthorn.initializer.properties.InitPropertiesBuilder;
 
 import static net.cactusthorn.initializer.annotations.InitPropertyPolicy.*;
 
-@InitProperty
+@InitProperty(REQUIRED)
 public class BeanTest {
 
-	@InitProperty
+	@InitProperty(REQUIRED)
 	static class SubTestBean {
 		String name;
 		int[] values;
 	}
 
-	@InitProperty
+	@InitProperty(REQUIRED)
 	static class TestBean {
 		java.util.Date date;
 		Map<String, Integer> map;
-		@InitBean("sub-test-bean") @InitProperty(REQUIRED) SubTestBean subTestBean;
+		@InitBean("sub-test-bean") SubTestBean subTestBean;
 	}
 	
-	@InitBean("test-bean") @InitProperty(REQUIRED) TestBean testBean;
+	@InitBean("test-bean") TestBean testBean;
 	
 	String simple;
 	
