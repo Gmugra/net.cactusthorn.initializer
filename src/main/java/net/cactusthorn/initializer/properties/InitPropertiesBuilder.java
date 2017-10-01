@@ -31,19 +31,19 @@ import java.util.Set;
 
 public class InitPropertiesBuilder {
 	
-	private static final String DEFAULT_NAME = "default";
+	protected static final String DEFAULT_NAME = "default";
 	
-	private static final Set<String> DEFAULT_PATTERS = 
+	protected static final Set<String> DEFAULT_PATTERS = 
 		new HashSet<>(Arrays.asList("yyyy-MM-dd'T'HH:mm:ssXXX","yyyy-MM-dd'T'HH:mm:ss","yyyy-MM-dd"));
 	
-	private Set<String> dateTimePatterns = new HashSet<>(DEFAULT_PATTERS );
+	protected Set<String> dateTimePatterns = new HashSet<>(DEFAULT_PATTERS );
 	
-	private char valuesSeparator = ',';
-	private char pairSeparator = '=';
-	private boolean trimMultiValues;
+	protected char valuesSeparator = ',';
+	protected char pairSeparator = '=';
+	protected boolean trimMultiValues;
 	
-	private String name = DEFAULT_NAME;
-	private Map<String,String> properties = new HashMap<>();
+	protected String name = DEFAULT_NAME;
+	protected Map<String,String> properties = new HashMap<>();
 	
 	public InitPropertiesBuilder setName(String name) {
 		this.name = name;

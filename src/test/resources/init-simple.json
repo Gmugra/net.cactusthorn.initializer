@@ -1,0 +1,19 @@
+{
+	"str": "simple string",
+	"boolarr": [true, true, true, false, true, false],
+	"intarr": [10, 20, 30],
+	"bool": true,
+	"int": -123,
+	"date": "2017-09-17T11:16:50+01:00",
+	"strarr": ["sssss","fff,fff","ewevwevwv"],
+	"null": null,
+	"map": [{"10":"AA"},{"20":"BB"},{"30":"CC"}],
+	"bean":{
+		"b1": true,
+		"b2": "text",
+		"sub-bean": {
+			"int": [100,200,300,400],
+			"string": "XX"
+		}
+	}
+}
