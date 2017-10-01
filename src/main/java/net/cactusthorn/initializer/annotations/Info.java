@@ -27,56 +27,78 @@ public final class Info {
 	private boolean isEnvVariable;
 	private boolean isBean;
 	
-	private Info(String configBundleName, Class<?> clazz, Field field) {
-		
+	private Info(String configBundleName, Class<?> clazz) {
 		this.configBundleName = configBundleName;
 		this.clazz = clazz;
+	}
+	
+	private Info(String configBundleName, Class<?> clazz, Field field) {
+		this(configBundleName, clazz);
 		this.field = field;
 		name = field.getName();
 	}
 	
-	public static Info build(String configBundleName, Class<?> clazz, Field field) throws InitializerException {
+	public static Info build(String configBundleName, Class<?> clazz) throws InitializerException {
 		
 		Info info = null;
 		
-		for (Annotation annotation : field.getAnnotations() ) {
-			
-			Class<? extends Annotation> annotatedType = annotation.annotationType();
-			
+		Annotation annotation = clazz.getAnnotation(InitProperty.class);
+		if (annotation != null ) {
+			info = new Info(configBundleName, clazz);
 			try {
-				
-				if (InitPropertyName.class.equals(annotatedType ) ) {
-					
-					if (info == null ) {info = new Info(configBundleName, clazz, field);}
-					
-					Method method = annotatedType.getDeclaredMethod("value");
-					info.name = (String)method.invoke(annotation);
-				}  else if (InitBean.class.equals(annotatedType ) ) {
-					
-					if (info == null ) {info = new Info(configBundleName, clazz, field);}
-					
-					Method method = annotatedType.getDeclaredMethod("value");
-					info.name = (String)method.invoke(annotation);
-					info.isBean = true;
-				} else if (InitEnvVariable.class.equals(annotatedType ) ) {
-					
-					if (info == null ) {info = new Info(configBundleName, clazz, field);}
-					
-					Method method = annotatedType.getDeclaredMethod("value");
-					info.name = (String)method.invoke(annotation);
-					info.isEnvVariable = true;
-				}
-				
-				if (InitProperty.class.equals(annotatedType ) ) {
-					
-					if (info == null ) {info = new Info(configBundleName, clazz, field);}
-					
-					Method method = annotatedType.getDeclaredMethod("value");
-					info.policy = (InitPropertyPolicy)method.invoke(annotation);
-				}
-			} catch (NoSuchMethodException|SecurityException|IllegalAccessException|IllegalArgumentException|InvocationTargetException e) {
+				Method method = annotation.annotationType().getDeclaredMethod("value");
+				info.policy = (InitPropertyPolicy)method.invoke(annotation);
+			} catch (NoSuchMethodException|IllegalAccessException|IllegalArgumentException|InvocationTargetException e) {
 				throw new InitializerException(info, e);
 			}
+		}
+		
+		return info;
+	}
+	
+	public static Info build(String configBundleName, Class<?> clazz, Info classInfo, Field field) throws InitializerException {
+		
+		Info info = null;
+		
+		Annotation nameAnnotation = field.getAnnotation(InitPropertyName.class);
+		Annotation beanAnnotation = field.getAnnotation(InitBean.class);
+		Annotation envAnnotation = field.getAnnotation(InitEnvVariable.class);
+		Annotation initAnnotation = field.getAnnotation(InitProperty.class);
+		
+		try {
+			
+			if (nameAnnotation != null ) {
+				
+				info = new Info(configBundleName, clazz, field);
+				Method method = nameAnnotation.annotationType().getDeclaredMethod("value");
+				info.name = (String)method.invoke(nameAnnotation);
+			} else if (beanAnnotation != null) {
+				
+				info = new Info(configBundleName, clazz, field);
+				Method method = beanAnnotation.annotationType().getDeclaredMethod("value");
+				info.name = (String)method.invoke(beanAnnotation);
+				info.isBean = true;
+			} else if (envAnnotation != null) {
+				
+				info = new Info(configBundleName, clazz, field);
+				Method method = envAnnotation.annotationType().getDeclaredMethod("value");
+				info.name = (String)method.invoke(envAnnotation);
+				info.isEnvVariable = true;
+			}
+		
+			if (initAnnotation != null ) {
+				
+				if (info == null ) {info = new Info(configBundleName, clazz, field);}
+				Method method = initAnnotation.annotationType().getDeclaredMethod("value");
+				info.policy = (InitPropertyPolicy)method.invoke(initAnnotation);
+			} else if (classInfo != null ) {
+				
+				if (info == null ) {info = new Info(configBundleName, clazz, field);}
+				info.policy = classInfo.getPolicy();
+			}
+			
+		} catch (NoSuchMethodException|IllegalAccessException|IllegalArgumentException|InvocationTargetException e) {
+			throw new InitializerException(info, e);
 		}
 		
 		return info;

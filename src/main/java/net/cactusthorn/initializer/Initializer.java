@@ -98,10 +98,11 @@ public final class Initializer {
 	private void initialize(Collection<ITypes> availableTypes, InitProperties initProperties, Object object) {
 		
 		Class<?> clazz = object.getClass();
+		Info classInfo = Info.build(initProperties.getName(), clazz);
 		
 		for (Field field : clazz.getDeclaredFields() ) {
 			
-			Info info = Info.build(initProperties.getName(), clazz, field);
+			Info info = Info.build(initProperties.getName(), clazz, classInfo, field);
 				
 			if (info == null) {
 				

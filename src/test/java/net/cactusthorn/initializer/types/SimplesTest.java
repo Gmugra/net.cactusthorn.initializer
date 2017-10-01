@@ -22,42 +22,32 @@ import net.cactusthorn.initializer.InitializerException;
 import net.cactusthorn.initializer.annotations.InitProperty;
 import net.cactusthorn.initializer.properties.InitPropertiesBuilder;
 
+@InitProperty(OPTIONAL)
 public class SimplesTest {
 
 	Initializer initializer = new Initializer();
 	InitPropertiesBuilder builder = new InitPropertiesBuilder();
 	
-	@InitProperty(OPTIONAL)
 	Boolean bool = Boolean.FALSE;
 	
-	@InitProperty(OPTIONAL)
 	Character _char = 'A';
 	
-	@InitProperty(OPTIONAL)
 	Integer integer = 10;
 	
-	@InitProperty(OPTIONAL)
 	Byte _byte = (byte)30;
 	
-	@InitProperty(OPTIONAL)
 	Long _long = 40L;
 	
-	@InitProperty(OPTIONAL)
 	Short _short = (short)50;
 	
-	@InitProperty(OPTIONAL)
 	Float _float = -100.99f;
 	
-	@InitProperty(OPTIONAL)
 	Double _double = -200.43d;
 	
-	@InitProperty(OPTIONAL)
 	String string = "test";
 	
-	@InitProperty(OPTIONAL)
 	BigDecimal bigd = new BigDecimal(-100.8574774d);
 	
-	@InitProperty(OPTIONAL)
 	BigInteger bigi = new BigInteger("2095725747485959595054403");
 	
 	@Test(expected = InitializerException.class)

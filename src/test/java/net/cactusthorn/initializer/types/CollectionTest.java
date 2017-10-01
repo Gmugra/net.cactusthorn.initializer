@@ -25,6 +25,7 @@ import net.cactusthorn.initializer.properties.InitPropertiesBuilder;
 
 import static net.cactusthorn.initializer.annotations.InitPropertyPolicy.*;
 
+@InitProperty
 public class CollectionTest {
 
 	InitPropertiesBuilder pb = new InitPropertiesBuilder();
@@ -36,25 +37,18 @@ public class CollectionTest {
 	@InitProperty
 	ArrayList<String> arrayList;
 
-	@InitProperty
 	List<String> list;
 	
-	@InitProperty
 	SortedSet<String> sortedSet;
 	
-	@InitProperty
 	Set<String> set;
 	
-	@InitProperty
 	LinkedList<String> linkedList;
 	
-	@InitProperty
 	HashSet<String> hashSet;
 	
-	@InitProperty
 	LinkedHashSet<String> linkedHashSet;
 	
-	@InitProperty
 	TreeSet<String> treeSet;
 
 	@InitProperty(OPTIONAL)

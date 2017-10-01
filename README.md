@@ -85,22 +85,25 @@ import net.cactusthorn.initializer.properties.InitPropertiesBuilder;
 
 import static net.cactusthorn.initializer.annotations.InitPropertyPolicy.*;
 
+@InitProperty
 public class BeanTest {
 
+	@InitProperty
 	static class SubTestBean {
-		@InitProperty String name;
-		@InitProperty int[] values;
+		String name;
+		int[] values;
 	}
 
+	@InitProperty
 	static class TestBean {
-		@InitProperty java.util.Date date;
-		@InitProperty Map<String, Integer> map;
+		java.util.Date date;
+		Map<String, Integer> map;
 		@InitBean("sub-test-bean") @InitProperty(REQUIRED) SubTestBean subTestBean;
 	}
 	
 	@InitBean("test-bean") @InitProperty(REQUIRED) TestBean testBean;
 	
-	@InitProperty String simple;
+	String simple;
 	
 	@Test
 	public void testBean() throws URISyntaxException, IOException {
