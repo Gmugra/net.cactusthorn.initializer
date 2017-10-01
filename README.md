@@ -2,11 +2,7 @@
 
 Initializer is Java library that can be used to dynamically initialize object attributes.
 
-It's typical task to initialize some classes based on text data from, for example, configuration files.
-
-Idea is, that configuration properties present in short and human readable way, 
-when even multi-value properties are stored in one line. 
-And then data is using to intitialize classes with complex types without much effort from developer.
+It's about typical task to initialize some objects based on strings from, for example, configuration files.
 
 ## Simple example
 Let say we have the class:
