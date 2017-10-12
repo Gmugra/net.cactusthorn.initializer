@@ -22,9 +22,6 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentNavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
-import javax.script.Bindings;
-import javax.script.SimpleBindings;
-
 import net.cactusthorn.initializer.InitializerException;
 import net.cactusthorn.initializer.annotations.Info;
 import net.cactusthorn.initializer.properties.InitProperties;
