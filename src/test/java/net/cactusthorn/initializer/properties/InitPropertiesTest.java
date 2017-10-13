@@ -57,6 +57,14 @@ public class InitPropertiesTest {
 	}
 
 	@Test
+	public void testUtilPropertiesLoadUTF8() throws URISyntaxException, IOException {
+		
+		Path path = Paths.get(getClass().getClassLoader().getResource("init.properties").toURI());
+		InitProperties ip = InitProperties.load(path);	
+		assertEquals("super \u042b \u00df\u00dfd", ip.get("string"));
+	}
+	
+	@Test
 	public void testUtilProperties() throws URISyntaxException, IOException {
 		
 		Path path = Paths.get(getClass().getClassLoader().getResource("init.properties").toURI());

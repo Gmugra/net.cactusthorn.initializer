@@ -10,8 +10,11 @@
  ******************************************************************************/
 package net.cactusthorn.initializer.properties;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -24,10 +27,10 @@ public class InitPropertiesJSONBuilder extends InitPropertiesBuilder {
 	private static final Gson GSON = new Gson();
 	
 	@SuppressWarnings("unchecked")
-	public InitPropertiesJSONBuilder loadFromJSON(Path path) throws IOException {
+	public InitPropertiesJSONBuilder loadFromJSON(Path path, Charset charset) throws IOException {
 		
 		Map<String,?> json;
-		try (BufferedReader buf = Files.newBufferedReader(path ) ) {
+		try (BufferedReader buf = Files.newBufferedReader(path, charset ) ) {
 			 
 			json = (Map<String,?>)GSON.fromJson(buf, Map.class);
 		}
@@ -35,6 +38,10 @@ public class InitPropertiesJSONBuilder extends InitPropertiesBuilder {
 		bean("", json);
 		
 		return this;
+	}
+	
+	public InitPropertiesBuilder loadFromJSON(Path path) throws IOException {
+		return loadFromJSON(path, UTF_8);
 	}
 	
 	@SuppressWarnings("unchecked")

@@ -16,6 +16,8 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.nio.charset.Charset;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeFormatter;
@@ -28,6 +30,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.Locale;
 
 public class InitPropertiesBuilder {
 	
@@ -41,6 +44,8 @@ public class InitPropertiesBuilder {
 	protected char valuesSeparator = ',';
 	protected char pairSeparator = '=';
 	protected boolean trimMultiValues;
+	
+	protected Locale locale;
 	
 	protected String name = DEFAULT_NAME;
 	protected Map<String,String> properties = new HashMap<>();
@@ -84,6 +89,11 @@ public class InitPropertiesBuilder {
 		return this;
 	}
 	
+	public InitPropertiesBuilder setLocale(Locale locale) {
+		this.locale = locale;
+		return this;
+	}
+	
 	public InitPropertiesBuilder addDateTimeFormatPattern(String pattern) {
 		if (!dateTimePatterns.contains(pattern ) ) {
 			dateTimePatterns.add(pattern);
@@ -113,12 +123,16 @@ public class InitPropertiesBuilder {
 		return this;
 	}
 	
-	public InitPropertiesBuilder load(Path path) throws IOException {
+	public InitPropertiesBuilder load(Path path, Charset charset) throws IOException {
 		Properties utilProperties = new Properties();
-		try (BufferedReader buf = Files.newBufferedReader(path ) ) {
+		try (BufferedReader buf = Files.newBufferedReader(path, charset ) ) {
 			utilProperties.load(buf);
 		}
 		return from(utilProperties);
+	}
+	
+	public InitPropertiesBuilder load(Path path) throws IOException {
+		return load(path, UTF_8);
 	}
 	
 	public InitPropertiesBuilder loadFromXML(Path path) throws IOException {
@@ -145,19 +159,24 @@ public class InitPropertiesBuilder {
 		
 		DateTimeFormatterBuilder builder = new DateTimeFormatterBuilder();
 		dateTimePatterns.forEach(p -> builder.appendPattern("[" + p + "]" ) );
-		DateTimeFormatter
-			dateTimeFormatter = 
-				builder
-					.parseDefaulting(ChronoField.MONTH_OF_YEAR, 1)
-					.parseDefaulting(ChronoField.DAY_OF_MONTH, 1)
-					.parseDefaulting(ChronoField.HOUR_OF_DAY, 0)
-					.parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0)
-					.parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
-					.parseDefaulting(ChronoField.MICRO_OF_SECOND, 0)
-					.parseDefaulting(ChronoField.MILLI_OF_SECOND, 0)
-					.toFormatter();
 		
-		return 
-			new InitProperties(name, properties, splitter, dateTimeFormatter);
+		builder
+			.parseDefaulting(ChronoField.MONTH_OF_YEAR, 1)
+			.parseDefaulting(ChronoField.DAY_OF_MONTH, 1)
+			.parseDefaulting(ChronoField.HOUR_OF_DAY, 0)
+			.parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0)
+			.parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
+			.parseDefaulting(ChronoField.MICRO_OF_SECOND, 0)
+			.parseDefaulting(ChronoField.MILLI_OF_SECOND, 0);
+		
+		DateTimeFormatter dateTimeFormatter = null;
+		
+		if (locale == null ) {
+			dateTimeFormatter = builder.toFormatter();
+		} else {
+			dateTimeFormatter = builder.toFormatter(locale);	
+		}
+		
+		return new InitProperties(name, properties, splitter, dateTimeFormatter);
 	}
 }
