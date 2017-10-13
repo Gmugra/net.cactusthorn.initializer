@@ -40,7 +40,7 @@ public class InitPropertiesJSONBuilder extends InitPropertiesBuilder {
 		return this;
 	}
 	
-	public InitPropertiesBuilder loadFromJSON(Path path) throws IOException {
+	public InitPropertiesJSONBuilder loadFromJSON(Path path) throws IOException {
 		return loadFromJSON(path, UTF_8);
 	}
 	
