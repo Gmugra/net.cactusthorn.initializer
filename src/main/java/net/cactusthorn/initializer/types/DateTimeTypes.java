@@ -18,6 +18,9 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Collection;
+import java.util.TimeZone;
+import java.util.Date;
+import java.util.Calendar;
 
 import net.cactusthorn.initializer.InitializerException;
 import net.cactusthorn.initializer.annotations.Info;
@@ -45,7 +48,7 @@ public class DateTimeTypes implements ITypes {
 		boolean empty = propertyValue.isEmpty();
 		DateTimeFormatter formatter = initProperties.getDateTimeFormatter();
 		
-		if (java.util.Date.class.equals(fieldType) ) {
+		if (Date.class.equals(fieldType) ) {
 
 			return Value.of(empty ? null : getJavaUtilDate(info, propertyValue, formatter) );
 		}
@@ -57,19 +60,25 @@ public class DateTimeTypes implements ITypes {
 			
 			return Value.of(empty ? null : getZonedDateTime(info, propertyValue, formatter) );
 		}
-		if (java.sql.Date.class.equals(fieldType) ) {
-			
-			return Value.of(empty ? null : 
-				new java.sql.Date(getJavaUtilDate(info, propertyValue, formatter).getTime() ) );
-		}
-		if (java.util.Calendar.class.equals(fieldType) ) {
+		if (Calendar.class.equals(fieldType) ) {
 			
 			if (empty) { 
 				return Value._null();
 			}
-			
-			java.util.Calendar calendar = java.util.Calendar.getInstance();
-			calendar.setTime(getJavaUtilDate(info, propertyValue, formatter) );
+	
+			Calendar calendar = null;
+			try {
+				ZonedDateTime zdt = getZonedDateTime(info, propertyValue, formatter);
+				calendar = Calendar.getInstance(TimeZone.getTimeZone(zdt.getZone()));
+				
+				Date date = Date.from(zdt.toInstant()); 
+				calendar.setTime(date);
+			} catch (InitializerException ze ) {
+				LocalDateTime ldt = getLocalDateTime(info, propertyValue, formatter);
+				Date date = Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant()); 
+				calendar = Calendar.getInstance();
+				calendar.setTime(date);
+			}
 			
 			return Value.of(calendar);
 		}
@@ -77,8 +86,8 @@ public class DateTimeTypes implements ITypes {
 		return Value.empty();
 	}
 	
-	private java.util.Date getJavaUtilDate(Info info, String propertyValue, DateTimeFormatter formatter ) throws InitializerException {
-		return java.sql.Date.from(getInstant(info, propertyValue, formatter ) );
+	private Date getJavaUtilDate(Info info, String propertyValue, DateTimeFormatter formatter ) throws InitializerException {
+		return Date.from(getInstant(info, propertyValue, formatter ) );
 	}
 	
 	private ZonedDateTime getZonedDateTime(Info info, String propertyValue, DateTimeFormatter formatter ) throws InitializerException {
@@ -98,7 +107,7 @@ public class DateTimeTypes implements ITypes {
 	}
 		
 	private Instant getInstant(Info info, String propertyValue, DateTimeFormatter formatter ) throws InitializerException {
-		try {
+		try {			
 			return getZonedDateTime(info, propertyValue, formatter).toInstant();
 		} catch (InitializerException ze ) {
 			return getLocalDateTime(info, propertyValue, formatter).atZone(ZoneId.systemDefault()).toInstant();

@@ -10,13 +10,13 @@
  ******************************************************************************/
 package net.cactusthorn.initializer.types;
 
+import org.junit.Test;
 import static org.junit.Assert.*;
 
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
-
-import org.junit.Test;
 
 import static net.cactusthorn.initializer.annotations.InitPropertyPolicy.OPTIONAL;
 import net.cactusthorn.initializer.Initializer;
@@ -26,12 +26,13 @@ import net.cactusthorn.initializer.properties.InitPropertiesBuilder;
 
 public class DateTimeTest {
 	
+	static Locale LOCALE = Locale.forLanguageTag("us-US");
+	static java.util.Calendar CURRENT_CALENDAR = Calendar.getInstance(); 
+	static java.util.Date CURRENT_UTIL_DATE = CURRENT_CALENDAR.getTime();
+	static DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX", LOCALE);
+	
 	Initializer initializer = new Initializer();
 	InitPropertiesBuilder pb = new InitPropertiesBuilder();
-	
-	java.util.Calendar currentCalendar = Calendar.getInstance(); 
-	java.util.Date currentUtilDate = currentCalendar.getTime();
-	java.sql.Date currentSqlDate = new java.sql.Date(currentUtilDate.getTime());
 	
 	@InitProperty(OPTIONAL)
 	java.util.Date date;
@@ -101,33 +102,22 @@ public class DateTimeTest {
 		initializer.initialize(pb.put("calendar", "2017-10-05").build(), this);
 		assertNotNull(calendar);
 		
-		calendar = currentCalendar;
+		calendar = CURRENT_CALENDAR;
 		
 		initializer.initialize(pb.put("calendar", "").build(), this);
 		assertNull(calendar);
 	}
 	
-	
 	@Test
-	public void testSqlDate() {
+	public void testCalendarTZ() {
 		
-		initializer.initialize(pb.put("sqldate", "2017-09-17T11:16:50+01:00").build(), this);
-		assertNotNull(sqldate);
+		initializer.initialize(pb.put("calendar", "2017-09-17T11:16:50+03:00").build(), this);
 		
-		sqldate = null;
+		assertEquals("GMT+03:00", calendar.getTimeZone().getID());
 		
-		initializer.initialize(pb.put("sqldate", "2017-09-17T11:16:50").build(), this);
-		assertNotNull(sqldate);
+		ZonedDateTime zdt = ZonedDateTime.ofInstant(calendar.toInstant(), calendar.getTimeZone().toZoneId());
 		
-		sqldate = null;
-		
-		initializer.initialize(pb.put("sqldate", "2017-09-17T11:16:50").build(), this);
-		assertNotNull(sqldate);
-		
-		sqldate = currentSqlDate;
-		
-		initializer.initialize(pb.put("sqldate", "").build(), this);
-		assertNull(sqldate);
+		assertEquals("2017-09-17T11:16:50+03:00",FORMATTER.format(zdt ));
 	}
 
 	@Test
@@ -146,7 +136,7 @@ public class DateTimeTest {
 		initializer.initialize(pb.put("date", "2017-10-05").build(), this);
 		assertNotNull(date);
 		
-		date = currentUtilDate;
+		date = CURRENT_UTIL_DATE;
 		
 		initializer.initialize(pb.put("date", "").build(), this);
 		assertNull(date);
