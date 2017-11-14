@@ -67,19 +67,19 @@ public abstract class MultiValueTypes implements ITypes {
 			return null;
 		} catch (InitializerException cie ) {
 			if (cie.getStandardError() == WRONG_VALUE) {
-				throw new InitializerException (info, WRONG_VALUE_AT_POSITION, cie.getRootСause(), 0);
+				throw new InitializerException (info, WRONG_VALUE_AT_POSITION, cie.getCause(), 0);
 			}
 			throw cie;
 		}
 	}
 	
-	protected Value<?> get(ITypes type, Info info, String value, Class<?> genericClass, InitProperties initProperties) throws InitializerException {
+	protected Value<?> get(ITypes type, Info info, String value, int position, Class<?> genericClass, InitProperties initProperties) throws InitializerException {
 		
 		try {
 			return type.createObject(genericClass, null, info, value, initProperties, null);
 		} catch (InitializerException cie ) {
 			if (cie.getStandardError() == WRONG_VALUE) {
-				throw new InitializerException (info, WRONG_VALUE_AT_POSITION, cie.getRootСause(), 0);
+				throw new InitializerException (info, WRONG_VALUE_AT_POSITION, cie.getCause(), position);
 			}
 			throw cie;
 		}

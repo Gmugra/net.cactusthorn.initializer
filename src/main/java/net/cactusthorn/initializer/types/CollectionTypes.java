@@ -130,7 +130,7 @@ public class CollectionTypes extends MultiValueTypes {
 		newCollection.add(typeValue.value.get() );
 		
 		for (int i = 1; i < valueParts.size(); i++ ) {
-			Value<?> value = get(typeValue.type, info, valueParts.get(i), collectionClass, initProperties);
+			Value<?> value = get(typeValue.type, info, valueParts.get(i), i, collectionClass, initProperties);
 			newCollection.add(value.get() );
 		}
 		

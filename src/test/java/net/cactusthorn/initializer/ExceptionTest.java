@@ -37,6 +37,9 @@ public class ExceptionTest {
 	
 	@InitProperty(OPTIONAL)
 	StringTokenizer st;
+	
+	@InitProperty(OPTIONAL)
+	int[] array;
 
 	@Test
 	public void testUNSUPPORTED_TYPE() {
@@ -50,11 +53,20 @@ public class ExceptionTest {
 	}
 	
 	@Test
+	public void testWRONG_MULTI_VALUE() {
+		
+		try {
+			initializer.initialize(builder.put("array", "1,a,3").put("bool", true).build(), this);
+		} catch (InitializerException e ) {
+			assertEquals(WRONG_VALUE_AT_POSITION,e.getStandardError());
+		}
+	}
+	
+	@Test
 	public void testWRONG_VALUE() {
 		
 		try {
 			initializer.initialize(builder.put("_int", 66.66d).put("bool", true).build(), this);
-			fail();
 		} catch (InitializerException e ) {
 			assertEquals(WRONG_VALUE,e.getStandardError());
 		}

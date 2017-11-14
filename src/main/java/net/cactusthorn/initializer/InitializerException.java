@@ -34,11 +34,7 @@ public class InitializerException extends RuntimeException {
 	
 	private static final long serialVersionUID = 0L;
 	
-	private static String LS = System.getProperty("line.separator");
-	
 	private StandardError standardError;
-	
-	private Exception rootСause; 
 	
 	//I know about String.format, but I hate unreadable place-holders
 	private static String format(Info info, String messageTemplate, int position ) {
@@ -57,24 +53,20 @@ public class InitializerException extends RuntimeException {
 				.replace("{position}", String.valueOf(position));
 	}
 	
-	public InitializerException(Info info, String messageTemplate, Exception e, int position ) {
-		 super(format(info,messageTemplate + (e == null?"":LS + '\t' + e.toString() ), position) );
-		 if (e != null ) {
-			 this.setStackTrace(e.getStackTrace());
-			 rootСause = e;
-		 }
+	public InitializerException(Info info, String messageTemplate, Throwable e, int position ) {
+		super(format(info,messageTemplate, position), e);
 	}
 	     
 	public InitializerException(Info info, String messageTemplate) {
-		 this(info,messageTemplate,null,0);
+		 this(info,messageTemplate, null, 0);
 	}
 	
-	public InitializerException(Info info, StandardError standardError, Exception e, int position) {
+	public InitializerException(Info info, StandardError standardError, Throwable e, int position) {
 		 this(info, standardError.messageTemplate, e, position );
 		 this.standardError = standardError;
 	}
 	
-	public InitializerException(Info info, StandardError standardError, Exception e) {
+	public InitializerException(Info info, StandardError standardError, Throwable e) {
 		 this(info, standardError, e, 0 );
 	}
 	
@@ -96,8 +88,5 @@ public class InitializerException extends RuntimeException {
 	
 	public StandardError getStandardError() {
 		return standardError;
-	}
-	public Exception getRootСause() {
-		return rootСause;
 	}
 }

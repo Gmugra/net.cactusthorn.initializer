@@ -133,8 +133,8 @@ public class MapTypes extends MultiValueTypes {
 		newMap.put(keyTypeValue.value.get(), valueTypeValue.value.get());
 		
 		for (int i = 1; i < pairs.size(); i++ ) {
-			Value<?> key = get(keyTypeValue.type, info, pairs.get(i).getKey(), keyClass, initProperties);
-			Value<?> value = get(valueTypeValue.type, info, pairs.get(i).getValue(), valueClass, initProperties);
+			Value<?> key = get(keyTypeValue.type, info, pairs.get(i).getKey(), i, keyClass, initProperties);
+			Value<?> value = get(valueTypeValue.type, info, pairs.get(i).getValue(), i, valueClass, initProperties);
 			newMap.put(key.get(), value.get());
 		}
 		

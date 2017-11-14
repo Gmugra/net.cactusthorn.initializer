@@ -62,7 +62,7 @@ public class ArrayTypes extends MultiValueTypes {
 		Array.set(array, 0, typeValue.value.get());
 		
 		for (int i = 1; i < valueParts.size(); i++ ) {
-			Value<?> value = get(typeValue.type, info, valueParts.get(i), arrayType, initProperties);
+			Value<?> value = get(typeValue.type, info, valueParts.get(i), i, arrayType, initProperties);
 			Array.set(array, i, value.get());
 		}
 		
