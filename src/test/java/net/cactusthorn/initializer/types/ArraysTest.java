@@ -14,10 +14,13 @@ import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
+
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.*;
 
-import static net.cactusthorn.initializer.InitializerException.StandardError.*;
 import static net.cactusthorn.initializer.annotations.InitPropertyPolicy.*;
 import net.cactusthorn.initializer.Initializer;
 import net.cactusthorn.initializer.InitializerException;
@@ -49,6 +52,9 @@ public class ArraysTest {
 	
 	@InitProperty(OPTIONAL)
 	StringBuilder[] builder;
+	
+	@Rule
+	public ExpectedException expectedException = ExpectedException.none();
 
 	@Test
 	public void testEmptyAllowedInt() {
@@ -68,12 +74,10 @@ public class ArraysTest {
 	@Test
 	public void testEmptyNotAllowed() {
 		
-		try {
-			new Initializer().initialize(pb.put("biarr", "").build(), this);
-			fail();
-		} catch (InitializerException e) {
-			assertEquals(NOT_EMPTY_PROPERTY, e.getStandardError());
-		}	
+		expectedException.expect(InitializerException.class);
+		expectedException.expectMessage(containsString("with not empty value"));
+		
+		new Initializer().initialize(pb.put("biarr", "").build(), this);
 	}
 	
 	@Test
@@ -92,12 +96,10 @@ public class ArraysTest {
 	@Test
 	public void testWrongElementArray() {
 		
-		try {
-			new Initializer().initialize(pb.put("iarr", "10,sss,30").build(), this);
-			fail();
-		} catch (InitializerException e ) {
-			assertEquals(WRONG_VALUE_AT_POSITION,e.getStandardError());
-		}
+		expectedException.expect(InitializerException.class);
+		expectedException.expectMessage(containsString("contain wrong value at position"));
+		
+		new Initializer().initialize(pb.put("iarr", "10,sss,30").build(), this);
 	}
 	
 	@Test

@@ -10,7 +10,11 @@
  ******************************************************************************/
 package net.cactusthorn.initializer;
 
-import static org.junit.Assert.*;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
+
+import static org.hamcrest.CoreMatchers.*;
 
 import java.util.StringTokenizer;
 
@@ -19,10 +23,7 @@ import net.cactusthorn.initializer.InitializerException;
 import net.cactusthorn.initializer.annotations.InitProperty;
 import net.cactusthorn.initializer.properties.InitPropertiesBuilder;
 
-import static net.cactusthorn.initializer.InitializerException.StandardError.*;
 import static net.cactusthorn.initializer.annotations.InitPropertyPolicy.*;
-
-import org.junit.Test;
 
 public class ExceptionTest {
 
@@ -40,58 +41,53 @@ public class ExceptionTest {
 	
 	@InitProperty(OPTIONAL)
 	int[] array;
+	
+	@Rule
+	public ExpectedException expectedException = ExpectedException.none();
 
 	@Test
 	public void testUNSUPPORTED_TYPE() {
 		
-		try {
-			initializer.initialize(builder.put("bool", true).put("st", "do it").build(), this);
-			fail();
-		} catch (InitializerException e ) {
-			assertEquals(UNSUPPORTED_TYPE,e.getStandardError());
-		}
+		expectedException.expect(InitializerException.class);
+		expectedException.expectMessage(containsString("has unsupported type"));
+		
+		initializer.initialize(builder.put("bool", true).put("st", "do it").build(), this);
 	}
 	
 	@Test
 	public void testWRONG_MULTI_VALUE() {
 		
-		try {
-			initializer.initialize(builder.put("array", "1,a,3").put("bool", true).build(), this);
-		} catch (InitializerException e ) {
-			assertEquals(WRONG_VALUE_AT_POSITION,e.getStandardError());
-		}
+		expectedException.expect(InitializerException.class);
+		expectedException.expectMessage(containsString("contain wrong value at position"));
+		
+		initializer.initialize(builder.put("array", "1,a,3").put("bool", true).build(), this);
 	}
 	
 	@Test
 	public void testWRONG_VALUE() {
 		
-		try {
-			initializer.initialize(builder.put("_int", 66.66d).put("bool", true).build(), this);
-		} catch (InitializerException e ) {
-			assertEquals(WRONG_VALUE,e.getStandardError());
-		}
+		expectedException.expect(InitializerException.class);
+		expectedException.expectMessage(containsString("contain wrong value for the field"));
+		
+		initializer.initialize(builder.put("_int", 66.66d).put("bool", true).build(), this);
 	}
 	
 	@Test
 	public void testNOT_EMPTY_PROPERTY() {
 		
-		try {
-			initializer.initialize(builder.put("bool", true).put("_int", "").build(), this);
-			fail();
-		} catch (InitializerException e ) {
-			assertEquals(NOT_EMPTY_PROPERTY,e.getStandardError());
-		}
+		expectedException.expect(InitializerException.class);
+		expectedException.expectMessage(containsString("with not empty value"));
+		
+		initializer.initialize(builder.put("bool", true).put("_int", "").build(), this);
 	}
 	
 	@Test
 	public void testREQUIRED_PROPERTY() {
 		
-		try {
-			initializer.initialize(builder.clear().put("_int", 1).build(), this);
-			fail();
-		} catch (InitializerException e ) {
-			assertEquals(REQUIRED_PROPERTY,e.getStandardError());
-		}
+		expectedException.expect(InitializerException.class);
+		expectedException.expectMessage(containsString("require property"));
+		
+		initializer.initialize(builder.clear().put("_int", 1).build(), this);
 	}
 
 }

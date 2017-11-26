@@ -16,15 +16,17 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
+
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.*;
 
 import net.cactusthorn.initializer.Initializer;
 import net.cactusthorn.initializer.InitializerException;
 import net.cactusthorn.initializer.annotations.*;
 import net.cactusthorn.initializer.properties.InitPropertiesBuilder;
-
-import static net.cactusthorn.initializer.InitializerException.StandardError.*;
 
 public class MapTest {
 	
@@ -59,6 +61,9 @@ public class MapTest {
 
 	@InitProperty
 	ConcurrentMap<String,String> cm;
+	
+	@Rule
+	public ExpectedException expectedException = ExpectedException.none();
 
 	@Test
 	public void testConcurrentMap() {
@@ -71,12 +76,10 @@ public class MapTest {
 	@Test
 	public void testNotAllowedEmpty() {
 		
-		try {
-			new Initializer().initialize(pb.put("hashMap", "").build(), this);
-			fail();
-		} catch (InitializerException e ) {
-			assertEquals(NOT_EMPTY_PROPERTY,e.getStandardError());
-		}
+		expectedException.expect(InitializerException.class);
+		expectedException.expectMessage(containsString("with not empty value"));
+		
+		new Initializer().initialize(pb.put("hashMap", "").build(), this);
 	}
 	
 	@Test
@@ -127,12 +130,10 @@ public class MapTest {
 	@Test
 	public void testUnsupported() throws ParseException {
 		
-		try {
-			new Initializer().initialize(pb.put("unsupported", "10=S").build(), this);
-			fail();
-		} catch (InitializerException e ) {
-			assertEquals(UNSUPPORTED_TYPE,e.getStandardError());
-		}
+		expectedException.expect(InitializerException.class);
+		expectedException.expectMessage(containsString("has unsupported type"));
+		
+		new Initializer().initialize(pb.put("unsupported", "10=S").build(), this);
 	}
 	
 	@Test
