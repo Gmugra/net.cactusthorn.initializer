@@ -12,6 +12,7 @@ package net.cactusthorn.initializer.types;
 
 import java.lang.reflect.Type;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -51,6 +52,10 @@ public class DateTimeTypes implements ITypes {
 		if (Date.class.equals(fieldType) ) {
 
 			return Value.of(empty ? null : getJavaUtilDate(info, propertyValue, formatter) );
+		}
+		if (LocalDate.class.equals(fieldType) ) {
+			
+			return Value.of(empty ? null : getLocalDate(info, propertyValue, formatter) );
 		}
 		if (LocalDateTime.class.equals(fieldType) ) {
 			
@@ -93,6 +98,14 @@ public class DateTimeTypes implements ITypes {
 	private ZonedDateTime getZonedDateTime(Info info, String propertyValue, DateTimeFormatter formatter ) throws InitializerException {
 		try {
 			return ZonedDateTime.parse(propertyValue, formatter);
+		} catch (DateTimeParseException e ) {
+			throw new InitializerException(info, UNPARSEABLE_DATETIME, e);
+		}
+	}
+	
+	private LocalDate getLocalDate(Info info, String propertyValue, DateTimeFormatter formatter ) throws InitializerException {
+		try {
+			return LocalDate.parse(propertyValue, formatter);
 		} catch (DateTimeParseException e ) {
 			throw new InitializerException(info, UNPARSEABLE_DATETIME, e);
 		}

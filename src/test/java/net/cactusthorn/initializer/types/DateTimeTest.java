@@ -13,6 +13,7 @@ package net.cactusthorn.initializer.types;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -49,12 +50,22 @@ public class DateTimeTest {
 	@InitProperty
 	ZonedDateTime zoned;
 	
+	@InitProperty
+	LocalDate localDate;
+	
 	@Test(expected = InitializerException.class)
 	public void testZonedDateTimeException() {
 		
 		new Initializer().initialize(pb.put("zoned", "2017-09-17T11:16:50").build(), this);
 	}
 
+	@Test
+	public void testLocalDate() {
+		
+		new Initializer().initialize(pb.put("localDate", "2017-09-17T11:16:50").build(), this);
+		assertEquals("2017-09-17", localDate.toString());
+	}
+	
 	@Test
 	public void testZonedDateTime() {
 		

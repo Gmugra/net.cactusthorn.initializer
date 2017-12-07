@@ -4,6 +4,21 @@ Initializer is Java library that can be used to dynamically initialize object at
 
 It's about typical task to initialize some objects based on strings from, for example, configuration files.
 
+## What it can initialize for the moment?
+* all primitive and simple types, StringBuffer, StringBuilder, BigDecimal, BigInteger, 
+* date/time: java.util.Date, java.util.Calendar, java.time.LocalDateTime, java.time.ZonedDateTime 
+* one-dimensional arrays of any type which described above
+* Collections with generic of any types which described above
+* Maps with generic of any types which described above as key or value
+* recursive beans initialization -> @InitBean
+* customizing date/time patterns
+* requirements policies
+* thread safe
+* naming -> @InitPropertyName
+* initialization by environment variables -> @InitEnvVariable 
+* extendable for support new types, and new type will work with array, beans and coollection
+* Check unit tests - a lot of examples there
+
 ## Simple example
 Let say we have the class:
 ```java
@@ -265,21 +280,6 @@ public class CustomTypesTest {
 	}
 }
 ```
-
-## What it can initialize for the moment?
-* all primitive and simple types, StringBuffer, StringBuilder, BigDecimal, BigInteger, 
-* date/time: java.util.Date, java.util.Calendar, java.time.LocalDateTime, java.time.ZonedDateTime 
-* one-dimensional arrays of any type which described above
-* Collections with generic of any types which described above
-* Maps with generic of any types which described above as key or value
-* recursive beans initialization -> @InitBean
-* customizing date/time patterns
-* requirements policies
-* thread safe
-* naming -> @InitPropertyName
-* initializaton by environment variables -> @InitEnvVariable 
-* extendable for support new types, and new type will work with array, beans and coollection
-* Check unit tests - a lot of examples there
 
 ## What it can NOT initialize
 * globally : attributes based on **not static** inner classes
