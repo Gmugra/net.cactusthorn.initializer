@@ -6,7 +6,7 @@ It's about typical task to initialize some objects based on strings from, for ex
 
 ## What it can initialize for the moment?
 * all primitive and simple types, StringBuffer, StringBuilder, BigDecimal, BigInteger, 
-* date/time: java.util.Date, java.util.Calendar, java.time.LocalDateTime, java.time.ZonedDateTime 
+* date/time: java.util.Date, java.util.Calendar, java.time.LocalDate, java.time.LocalDateTime, java.time.ZonedDateTime 
 * one-dimensional arrays of any type which described above
 * Collections with generic of any types which described above
 * Maps with generic of any types which described above as key or value
