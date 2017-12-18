@@ -105,17 +105,27 @@ public class DateTimeTypes implements ITypes {
 	
 	private LocalDate getLocalDate(Info info, String propertyValue, DateTimeFormatter formatter ) throws InitializerException {
 		try {
-			return LocalDate.parse(propertyValue, formatter);
+			ZonedDateTime zdt = ZonedDateTime.parse(propertyValue, formatter);
+			return zdt.withZoneSameInstant(TimeZone.getDefault().toZoneId() ).toLocalDate();
 		} catch (DateTimeParseException e ) {
-			throw new InitializerException(info, UNPARSEABLE_DATETIME, e);
+			try {
+				return LocalDate.parse(propertyValue, formatter);
+			} catch (DateTimeParseException ee ) {
+				throw new InitializerException(info, UNPARSEABLE_DATETIME, ee);
+			}
 		}
 	}
 	
 	private LocalDateTime getLocalDateTime(Info info, String propertyValue, DateTimeFormatter formatter ) throws InitializerException {
 		try {
-			return LocalDateTime.parse(propertyValue, formatter);
+			ZonedDateTime zdt = ZonedDateTime.parse(propertyValue, formatter);
+			return zdt.withZoneSameInstant(TimeZone.getDefault().toZoneId() ).toLocalDateTime();
 		} catch (DateTimeParseException e ) {
-			throw new InitializerException(info, UNPARSEABLE_DATETIME, e);
+			try {
+				return LocalDateTime.parse(propertyValue, formatter);
+			} catch (DateTimeParseException ee ) {
+				throw new InitializerException(info, UNPARSEABLE_DATETIME, ee);
+			}
 		}
 	}
 		

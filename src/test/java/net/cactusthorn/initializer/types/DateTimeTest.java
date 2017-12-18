@@ -10,7 +10,9 @@
  ******************************************************************************/
 package net.cactusthorn.initializer.types;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 import java.time.LocalDate;
@@ -53,6 +55,12 @@ public class DateTimeTest {
 	@InitProperty
 	LocalDate localDate;
 	
+	@BeforeClass
+	public static void initTimeZone() {
+		System.setProperty("user.timezone", "US/Alaska");
+		TimeZone.setDefault(null);
+	}
+	
 	@Test(expected = InitializerException.class)
 	public void testZonedDateTimeException() {
 		
@@ -64,6 +72,9 @@ public class DateTimeTest {
 		
 		new Initializer().initialize(pb.put("localDate", "2017-09-17T11:16:50").build(), this);
 		assertEquals("2017-09-17", localDate.toString());
+		
+		new Initializer().initialize(pb.put("local", "2017-09-17T23:16:50-12:00").build(), this);
+		assertEquals("2017-09-18T03:16:50", local.toString());
 	}
 	
 	@Test
@@ -76,6 +87,8 @@ public class DateTimeTest {
 	@Test(expected = InitializerException.class)
 	public void testLocalDateTimeException() {
 		
+		TimeZone.setDefault(null);
+		
 		new Initializer().initialize(pb.put("local", "21.12.1976").build(), this);
 	}
 	
@@ -84,6 +97,9 @@ public class DateTimeTest {
 		
 		new Initializer().initialize(pb.put("local", "2017-09-17T11:16:50").build(), this);
 		assertEquals("2017-09-17T11:16:50", local.toString());
+		
+		new Initializer().initialize(pb.put("local", "2017-09-17T11:16:50+02:00").build(), this);
+		assertEquals("2017-09-17T01:16:50", local.toString());
 	}
 	
 	@Test
@@ -95,6 +111,8 @@ public class DateTimeTest {
 	
 	@Test(expected = InitializerException.class)
 	public void testUtilDateException() {
+		
+		TimeZone.setDefault(null);
 		
 		initializer.initialize(pb.put("date", "21.12.1976").build(), this);
 	}
@@ -135,22 +153,16 @@ public class DateTimeTest {
 	public void testUtilDate() {
 		
 		initializer.initialize(pb.put("date", "2017-09-17T11:16:50+01:00").build(), this);
-		assertNotNull(date);
 		
-		date = null;
+		assertEquals("Sun Sep 17 02:16:50 AKDT 2017", date.toString());
 		
 		initializer.initialize(pb.put("date", "2017-09-17T11:16:50").build(), this);
-		assertNotNull(date);
-		
-		date = null;
+		assertEquals("Sun Sep 17 11:16:50 AKDT 2017", date.toString());
 		
 		initializer.initialize(pb.put("date", "2017-10-05").build(), this);
-		assertNotNull(date);
-		
-		date = CURRENT_UTIL_DATE;
+		assertEquals("Thu Oct 05 00:00:00 AKDT 2017", date.toString());
 		
 		initializer.initialize(pb.put("date", "").build(), this);
 		assertNull(date);
 	}
-
 }
