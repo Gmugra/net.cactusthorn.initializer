@@ -84,12 +84,15 @@ public class DateTimeTest {
     @Test
     public void testInstand() {
 
+        new Initializer().initialize(pb.put("instant", "2017-09-17T11:16:50Z").build(), this);
+        assertEquals("2017-09-17T11:16:50Z", instant.toString());
+
         new Initializer().initialize(pb.put("instant", "2017-09-17T11:16:50+02:00").build(), this);
         assertEquals("2017-09-17T09:16:50Z", instant.toString());
 
         new Initializer().initialize(pb.put("instant", "2017-09-17T11:16:50").build(), this);
         assertEquals("2017-09-17T11:16:50Z", instant.toString());
-        
+
         new Initializer().initialize(pb.put("instant", "2017-09-17").build(), this);
         assertEquals("2017-09-17T00:00:00Z", instant.toString());
     }
