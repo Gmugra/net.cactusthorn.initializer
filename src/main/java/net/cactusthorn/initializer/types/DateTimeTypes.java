@@ -30,110 +30,126 @@ import net.cactusthorn.initializer.properties.InitProperties;
 import static net.cactusthorn.initializer.InitializerException.StandardError.*;
 
 public class DateTimeTypes implements ITypes {
-	
-	@Override
-	public DateTimeTypes clone() throws CloneNotSupportedException {
-		
-		return (DateTimeTypes)super.clone();
-	}
-	
-	@Override
-	public Value<?> createObject(
-		Class<?> fieldType, 
-		Type fieldGenericType,
-		Info info, 
-		String propertyValue, 
-		InitProperties initProperties, 
-		Collection<ITypes> availableTypes) throws InitializerException {
-		
-		boolean empty = propertyValue.isEmpty();
-		DateTimeFormatter formatter = initProperties.getDateTimeFormatter();
-		
-		if (Date.class.equals(fieldType) ) {
 
-			return Value.of(empty ? null : getJavaUtilDate(info, propertyValue, formatter) );
-		}
-		if (LocalDate.class.equals(fieldType) ) {
-			
-			return Value.of(empty ? null : getLocalDate(info, propertyValue, formatter) );
-		}
-		if (LocalDateTime.class.equals(fieldType) ) {
-			
-			return Value.of(empty ? null : getLocalDateTime(info, propertyValue, formatter) );
-		}
-		if (ZonedDateTime.class.equals(fieldType) ) {
-			
-			return Value.of(empty ? null : getZonedDateTime(info, propertyValue, formatter) );
-		}
-		if (Calendar.class.equals(fieldType) ) {
-			
-			if (empty) { 
-				return Value._null();
-			}
-	
-			Calendar calendar = null;
-			try {
-				ZonedDateTime zdt = getZonedDateTime(info, propertyValue, formatter);
-				calendar = Calendar.getInstance(TimeZone.getTimeZone(zdt.getZone()));
-				
-				Date date = Date.from(zdt.toInstant()); 
-				calendar.setTime(date);
-			} catch (InitializerException ze ) {
-				LocalDateTime ldt = getLocalDateTime(info, propertyValue, formatter);
-				Date date = Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant()); 
-				calendar = Calendar.getInstance();
-				calendar.setTime(date);
-			}
-			
-			return Value.of(calendar);
-		}
-		
-		return Value.empty();
-	}
-	
-	private Date getJavaUtilDate(Info info, String propertyValue, DateTimeFormatter formatter ) throws InitializerException {
-		return Date.from(getInstant(info, propertyValue, formatter ) );
-	}
-	
-	private ZonedDateTime getZonedDateTime(Info info, String propertyValue, DateTimeFormatter formatter ) throws InitializerException {
-		try {
-			return ZonedDateTime.parse(propertyValue, formatter);
-		} catch (DateTimeParseException e ) {
-			throw new InitializerException(info, UNPARSEABLE_DATETIME, e);
-		}
-	}
-	
-	private LocalDate getLocalDate(Info info, String propertyValue, DateTimeFormatter formatter ) throws InitializerException {
-		try {
-			ZonedDateTime zdt = ZonedDateTime.parse(propertyValue, formatter);
-			return zdt.withZoneSameInstant(TimeZone.getDefault().toZoneId() ).toLocalDate();
-		} catch (DateTimeParseException e ) {
-			try {
-				return LocalDate.parse(propertyValue, formatter);
-			} catch (DateTimeParseException ee ) {
-				throw new InitializerException(info, UNPARSEABLE_DATETIME, ee);
-			}
-		}
-	}
-	
-	private LocalDateTime getLocalDateTime(Info info, String propertyValue, DateTimeFormatter formatter ) throws InitializerException {
-		try {
-			ZonedDateTime zdt = ZonedDateTime.parse(propertyValue, formatter);
-			return zdt.withZoneSameInstant(TimeZone.getDefault().toZoneId() ).toLocalDateTime();
-		} catch (DateTimeParseException e ) {
-			try {
-				return LocalDateTime.parse(propertyValue, formatter);
-			} catch (DateTimeParseException ee ) {
-				throw new InitializerException(info, UNPARSEABLE_DATETIME, ee);
-			}
-		}
-	}
-		
-	private Instant getInstant(Info info, String propertyValue, DateTimeFormatter formatter ) throws InitializerException {
-		try {			
-			return getZonedDateTime(info, propertyValue, formatter).toInstant();
-		} catch (InitializerException ze ) {
-			return getLocalDateTime(info, propertyValue, formatter).atZone(ZoneId.systemDefault()).toInstant();
-		}
-	}
+    @Override
+    public DateTimeTypes clone() throws CloneNotSupportedException {
+
+        return (DateTimeTypes) super.clone();
+    }
+
+    @Override
+    public Value<?> createObject(Class<?> fieldType,
+            Type fieldGenericType,
+            Info info,
+            String propertyValue,
+            InitProperties initProperties,
+            Collection<ITypes> availableTypes) throws InitializerException {
+
+        boolean empty = propertyValue.isEmpty();
+        DateTimeFormatter formatter = initProperties.getDateTimeFormatter();
+
+        if (Date.class.equals(fieldType)) {
+
+            return Value.of(empty ? null : getJavaUtilDate(info, propertyValue, formatter));
+        }
+        if (LocalDate.class.equals(fieldType)) {
+
+            return Value.of(empty ? null : getLocalDate(info, propertyValue, formatter));
+        }
+        if (LocalDateTime.class.equals(fieldType)) {
+
+            return Value.of(empty ? null : getLocalDateTime(info, propertyValue, formatter));
+        }
+        if (ZonedDateTime.class.equals(fieldType)) {
+
+            return Value.of(empty ? null : getZonedDateTime(info, propertyValue, formatter));
+        }
+        if (Instant.class.equals(fieldType)) {
+
+            Instant instant = null;
+            try {
+                ZonedDateTime zdt = getZonedDateTime(info, propertyValue, formatter);
+                instant = zdt.toInstant();
+            } catch (InitializerException ze) {
+                LocalDateTime ldt = getLocalDateTime(info, propertyValue, formatter);
+                instant = ldt.atZone(ZoneId.of("UTC")).toInstant();
+            }
+            return Value.of(instant);
+        }
+        if (Calendar.class.equals(fieldType)) {
+
+            if (empty) {
+                return Value._null();
+            }
+
+            Calendar calendar = null;
+            try {
+                ZonedDateTime zdt = getZonedDateTime(info, propertyValue, formatter);
+                calendar = Calendar.getInstance(TimeZone.getTimeZone(zdt.getZone()));
+
+                Date date = Date.from(zdt.toInstant());
+                calendar.setTime(date);
+            } catch (InitializerException ze) {
+                LocalDateTime ldt = getLocalDateTime(info, propertyValue, formatter);
+                Date date = Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant());
+                calendar = Calendar.getInstance();
+                calendar.setTime(date);
+            }
+
+            return Value.of(calendar);
+        }
+
+        return Value.empty();
+    }
+
+    private Date getJavaUtilDate(Info info, String propertyValue, DateTimeFormatter formatter)
+            throws InitializerException {
+        return Date.from(getInstant(info, propertyValue, formatter));
+    }
+
+    private ZonedDateTime getZonedDateTime(Info info, String propertyValue, DateTimeFormatter formatter)
+            throws InitializerException {
+        try {
+            return ZonedDateTime.parse(propertyValue, formatter);
+        } catch (DateTimeParseException e) {
+            throw new InitializerException(info, UNPARSEABLE_DATETIME, e);
+        }
+    }
+
+    private LocalDate getLocalDate(Info info, String propertyValue, DateTimeFormatter formatter)
+            throws InitializerException {
+        try {
+            ZonedDateTime zdt = ZonedDateTime.parse(propertyValue, formatter);
+            return zdt.withZoneSameInstant(TimeZone.getDefault().toZoneId()).toLocalDate();
+        } catch (DateTimeParseException e) {
+            try {
+                return LocalDate.parse(propertyValue, formatter);
+            } catch (DateTimeParseException ee) {
+                throw new InitializerException(info, UNPARSEABLE_DATETIME, ee);
+            }
+        }
+    }
+
+    private LocalDateTime getLocalDateTime(Info info, String propertyValue, DateTimeFormatter formatter)
+            throws InitializerException {
+        try {
+            ZonedDateTime zdt = ZonedDateTime.parse(propertyValue, formatter);
+            return zdt.withZoneSameInstant(TimeZone.getDefault().toZoneId()).toLocalDateTime();
+        } catch (DateTimeParseException e) {
+            try {
+                return LocalDateTime.parse(propertyValue, formatter);
+            } catch (DateTimeParseException ee) {
+                throw new InitializerException(info, UNPARSEABLE_DATETIME, ee);
+            }
+        }
+    }
+
+    private Instant getInstant(Info info, String propertyValue, DateTimeFormatter formatter)
+            throws InitializerException {
+        try {
+            return getZonedDateTime(info, propertyValue, formatter).toInstant();
+        } catch (InitializerException ze) {
+            return getLocalDateTime(info, propertyValue, formatter).atZone(ZoneId.systemDefault()).toInstant();
+        }
+    }
 }
